@@ -1,0 +1,327 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FITFAB S.A.C. - Mantenimiento</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../public/css/styles.css">
+</head>
+<body>
+    <div class="wrapper d-flex">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar bg-dark text-white shadow">
+            <div class="sidebar-header p-3 border-bottom border-secondary d-flex justify-content-between align-items-center">
+                <h4 class="m-0 fw-bold d-flex align-items-center">
+                    <i class="fa-solid fa-dumbbell text-primary me-2"></i> FITFAB
+                </h4>
+                <button type="button" id="sidebarClose" class="btn text-white d-md-none p-0">
+                    <i class="fa-solid fa-xmark fs-4"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav py-4 px-2">
+                <ul class="nav flex-column gap-1">
+                    <li class="nav-item">
+                        <a href="./index.html" class="nav-link rounded text-white">
+                            <i class="fa-solid fa-chart-line fa-fw me-2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./socios.html" class="nav-link rounded text-white">
+                            <i class="fa-solid fa-users fa-fw me-2"></i> Socios
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./clases.html" class="nav-link rounded text-white">
+                            <i class="fa-regular fa-calendar-check fa-fw me-2"></i> Clases y Reservas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./pagos.html" class="nav-link rounded text-white">
+                            <i class="fa-solid fa-file-invoice-dollar fa-fw me-2"></i> Pagos y FacturaciÃ³n
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./mantenimiento.html" class="nav-link rounded text-white active">
+                            <i class="fa-solid fa-wrench fa-fw me-2"></i> Mantenimiento de Equipos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./configuracion.html" class="nav-link rounded text-white">
+                            <i class="fa-solid fa-gear fa-fw me-2"></i> ConfiguraciÃ³n
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-content flex-grow-1 d-flex flex-column">
+            
+            <!-- Header -->
+            <header class="header bg-white shadow-sm px-4 py-3 d-flex justify-content-between align-items-center z-1">
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="btn btn-light d-md-none me-3 border-0">
+                        <i class="fa-solid fa-bars fs-5"></i>
+                    </button>
+                    <!-- Visible on small screens, hidden when very narrow if needed -->
+                    <h5 class="m-0 fw-bold text-dark d-none d-sm-block">FITFAB S.A.C.</h5>
+                </div>
+                
+                <div class="user-profile d-flex align-items-center gap-3">
+                    <div class="text-end d-none d-md-block">
+                        <p class="m-0 fw-semibold text-dark lh-1">Administrador</p>
+                        <small class="text-success fw-medium" style="font-size: 0.75rem;">
+                            <i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> En lÃ­nea
+                        </small>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=0D6EFD&color=fff&rounded=true" alt="Admin" class="rounded-circle shadow-sm" width="40" height="40">
+                    <button class="btn btn-outline-danger btn-sm d-none d-sm-flex align-items-center ms-2 fw-medium">
+                        <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar SesiÃ³n
+                    </button>
+                    <!-- Mobile logout icon -->
+                    <button class="btn btn-danger btn-sm d-sm-none">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dynamic Content Area -->
+            <main class="p-4 flex-grow-1 overflow-auto">
+                <div class="container-fluid px-0">
+                    <!-- Header of the view -->
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+                        <div>
+                            <h2 class="h3 mb-1 fw-bold text-gray-800">Mantenimiento de Equipos</h2>
+                            <p class="text-muted mb-0">Control de inventario e incidencias de maquinaria.</p>
+                        </div>
+                        <button class="btn btn-warning shadow-sm fw-medium text-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasIncidencia">
+                            <i class="fa-solid fa-triangle-exclamation me-2"></i> Registrar Incidencia
+                        </button>
+                    </div>
+
+                    <!-- Summary Cards -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-12 col-md-4">
+                            <div class="card stat-card border-0 shadow-sm h-100 rounded-4 overflow-hidden border-start border-success border-4">
+                                <div class="card-body p-4 position-relative">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <p class="text-muted fw-medium mb-1">Equipos Operativos</p>
+                                            <h3 class="fw-bold mb-0">45</h3>
+                                        </div>
+                                        <div class="icon-box bg-success bg-opacity-10 text-success rounded-3 p-3">
+                                            <i class="fa-solid fa-check-circle fs-4"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="card stat-card border-0 shadow-sm h-100 rounded-4 overflow-hidden border-start border-warning border-4">
+                                <div class="card-body p-4 position-relative">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <p class="text-muted fw-medium mb-1">En Mantenimiento</p>
+                                            <h3 class="fw-bold mb-0">3</h3>
+                                        </div>
+                                        <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-3 p-3">
+                                            <i class="fa-solid fa-screwdriver-wrench fs-4"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="card stat-card border-0 shadow-sm h-100 rounded-4 overflow-hidden border-start border-danger border-4">
+                                <div class="card-body p-4 position-relative">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <p class="text-muted fw-medium mb-1">Fuera de Servicio</p>
+                                            <h3 class="fw-bold mb-0">1</h3>
+                                        </div>
+                                        <div class="icon-box bg-danger bg-opacity-10 text-danger rounded-3 p-3">
+                                            <i class="fa-solid fa-ban fs-4"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Table -->
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="ps-4 py-3 text-muted fw-semibold border-bottom-0">CÃ³digo Interno</th>
+                                            <th class="py-3 text-muted fw-semibold border-bottom-0">Nombre del Equipo</th>
+                                            <th class="py-3 text-muted fw-semibold border-bottom-0">UbicaciÃ³n (SalÃ³n)</th>
+                                            <th class="py-3 text-muted fw-semibold border-bottom-0">Estado Actual</th>
+                                            <th class="pe-4 py-3 text-muted fw-semibold text-center border-bottom-0">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="ps-4 text-gray-800 fw-medium">EQ-001</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-light rounded p-2 me-3 border">
+                                                        <i class="fa-solid fa-person-running text-secondary fs-5" style="width:24px; text-align:center;"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-semibold text-gray-800 d-block">Cinta de Correr ProForm</span>
+                                                        <small class="text-muted">Serie: PF-2023X</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-gray-800">Zona Cardio</td>
+                                            <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill"><i class="fa-solid fa-check me-1"></i> Operativo</span></td>
+                                            <td class="pe-4 text-center">
+                                                <button class="btn btn-sm btn-light text-secondary rounded" title="Ver Historial"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 text-gray-800 fw-medium">EQ-014</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-light rounded p-2 me-3 border">
+                                                        <i class="fa-solid fa-bicycle text-secondary fs-5" style="width:24px; text-align:center;"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-semibold text-gray-800 d-block">Bicicleta EstÃ¡tica LifeFitness</span>
+                                                        <small class="text-muted">Serie: LF-C1</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-gray-800">Sala Spinning</td>
+                                            <td><span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-1 rounded-pill"><i class="fa-solid fa-screwdriver-wrench me-1"></i> En Mantenimiento</span></td>
+                                            <td class="pe-4 text-center">
+                                                <button class="btn btn-sm btn-light text-secondary rounded" title="Ver Historial"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 text-gray-800 fw-medium">EQ-032</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-light rounded p-2 me-3 border">
+                                                        <i class="fa-solid fa-dumbbell text-secondary fs-5" style="width:24px; text-align:center;"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-semibold text-gray-800 d-block">MÃ¡quina de Poleas Cruzadas</span>
+                                                        <small class="text-muted">Serie: MG-300</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-gray-800">Zona de Fuerza</td>
+                                            <td><span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 rounded-pill"><i class="fa-solid fa-ban me-1"></i> Fuera de Servicio</span></td>
+                                            <td class="pe-4 text-center">
+                                                <button class="btn btn-sm btn-light text-secondary rounded" title="Ver Historial"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Offcanvas for New Incident -->
+    <div class="offcanvas offcanvas-end border-0 shadow-lg" tabindex="-1" id="offcanvasIncidencia" aria-labelledby="offcanvasIncidenciaLabel" style="width: 400px;">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title fw-bold text-gray-800" id="offcanvasIncidenciaLabel">
+                <i class="fa-solid fa-wrench text-warning me-2"></i> Registrar Incidencia
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-4 bg-light">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <form id="formIncidencia">
+                        <div class="mb-4">
+                            <label for="equipoAfectado" class="form-label fw-medium text-muted small mb-1">Equipo afectado <span class="text-danger">*</span></label>
+                            <select class="form-select" id="equipoAfectado" required>
+                                <option value="" selected disabled>Buscar y seleccionar equipo...</option>
+                                <option value="EQ-001">EQ-001 - Cinta de Correr ProForm</option>
+                                <option value="EQ-014">EQ-014 - Bicicleta EstÃ¡tica LifeFitness</option>
+                                <option value="EQ-032">EQ-032 - MÃ¡quina de Poleas Cruzadas</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-medium text-muted small mb-2 d-block">Tipo de Mantenimiento <span class="text-danger">*</span></label>
+                            <div class="d-flex flex-column gap-2">
+                                <div class="form-check bg-white border rounded px-4 py-2">
+                                    <input class="form-check-input mt-1" type="radio" name="tipoMantenimiento" id="tipoPreventivo" value="Preventivo" required>
+                                    <label class="form-check-label fw-medium text-gray-800 w-100" for="tipoPreventivo" style="cursor: pointer;">Preventivo</label>
+                                </div>
+                                <div class="form-check bg-white border rounded px-4 py-2">
+                                    <input class="form-check-input mt-1" type="radio" name="tipoMantenimiento" id="tipoCorrectivo" value="Correctivo">
+                                    <label class="form-check-label fw-medium text-gray-800 w-100" for="tipoCorrectivo" style="cursor: pointer;">Correctivo</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="descProblema" class="form-label fw-medium text-muted small mb-1">DescripciÃ³n del problema <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="descProblema" rows="4" placeholder="Detalle la falla o el motivo del mantenimiento..." required></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="responsableMant" class="form-label fw-medium text-muted small mb-1">TÃ©cnico Responsable <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="responsableMant" placeholder="Ej. Carlos Mendoza" required>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-warning fw-medium text-dark py-2">
+                                <i class="fa-solid fa-save me-2"></i> Guardar Registro
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary py-2" data-bs-dismiss="offcanvas">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../public/js/admin/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const formIncidencia = document.getElementById('formIncidencia');
+            if (formIncidencia) {
+                formIncidencia.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const selectEl = document.getElementById('equipoAfectado');
+                    const equipo = selectEl.options[selectEl.selectedIndex].text;
+                    alert('Se ha registrado la incidencia exitosamente para: ' + equipo);
+                    
+                    // Hide Offcanvas using Bootstrap API
+                    const offcanvasEl = document.getElementById('offcanvasIncidencia');
+                    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasEl);
+                    if (offcanvasInstance) {
+                        offcanvasInstance.hide();
+                    }
+                    
+                    formIncidencia.reset();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

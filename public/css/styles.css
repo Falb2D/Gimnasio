@@ -1,0 +1,135 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #0d6efd;
+    --sidebar-bg: #0f172a; /* Slate 900 */
+    --sidebar-hover: #1e293b; /* Slate 800 */
+    --sidebar-active: #2563eb; /* Blue 600 */
+    --body-bg: #f8fafc; /* Slate 50 */
+    --text-color: #334155; /* Slate 700 */
+    --gray-800: #1e293b;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--body-bg);
+    color: var(--text-color);
+    overflow-x: hidden;
+}
+
+.wrapper {
+    min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 280px;
+    min-height: 100vh;
+    background-color: var(--sidebar-bg) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1040;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.1) !important;
+}
+
+.sidebar-header {
+    height: 72px; /* Matches header height roughly */
+}
+
+.sidebar .nav-link {
+    padding: 0.85rem 1.25rem;
+    color: #94a3b8 !important; /* Slate 400 */
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+}
+
+.sidebar .nav-link:hover {
+    background-color: var(--sidebar-hover);
+    color: #f8fafc !important; /* Slate 50 */
+    transform: translateX(4px);
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--sidebar-hover);
+    color: #ffffff !important;
+    border-left: 4px solid var(--sidebar-active);
+}
+
+.sidebar .nav-link i {
+    font-size: 1.1rem;
+    width: 24px;
+    text-align: center;
+}
+
+/* Main Content Styles */
+.main-content {
+    min-width: 0; /* Prevents overflow issues in flex items */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+main {
+    background-color: var(--body-bg);
+}
+
+/* Header Styles */
+.header {
+    height: 72px;
+}
+
+/* Custom Utilities */
+.text-gray-800 {
+    color: var(--gray-800) !important;
+}
+
+.stat-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+}
+
+.icon-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+}
+
+/* Mobile Sidebar Behavior */
+@media (max-width: 767.98px) {
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+    }
+    
+    .sidebar.show {
+        left: 0;
+    }
+    
+    /* Overlay for mobile */
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(15, 23, 42, 0.6); /* Slate 900 with opacity */
+        backdrop-filter: blur(2px);
+        z-index: 1030;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .sidebar-overlay.show {
+        display: block;
+        opacity: 1;
+    }
+}
