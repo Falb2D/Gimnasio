@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FITFAB S.A.C. - Pagos y FacturaciÃ³n</title>
+    <title>FITFAB S.A.C. - Pagos y Facturación</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome for icons -->
@@ -44,7 +44,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="./pagos.html" class="nav-link rounded text-white active">
-                            <i class="fa-solid fa-file-invoice-dollar fa-fw me-2"></i> Pagos y FacturaciÃ³n
+                            <i class="fa-solid fa-file-invoice-dollar fa-fw me-2"></i> Pagos y Facturación
                         </a>
                     </li>
                     <li class="nav-item">
@@ -54,7 +54,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="./configuracion.html" class="nav-link rounded text-white">
-                            <i class="fa-solid fa-gear fa-fw me-2"></i> ConfiguraciÃ³n
+                            <i class="fa-solid fa-gear fa-fw me-2"></i> Configuración
                         </a>
                     </li>
                 </ul>
@@ -78,12 +78,12 @@
                     <div class="text-end d-none d-md-block">
                         <p class="m-0 fw-semibold text-dark lh-1">Administrador</p>
                         <small class="text-success fw-medium" style="font-size: 0.75rem;">
-                            <i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> En lÃ­nea
+                            <i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> En línea
                         </small>
                     </div>
                     <img src="https://ui-avatars.com/api/?name=Admin&background=0D6EFD&color=fff&rounded=true" alt="Admin" class="rounded-circle shadow-sm" width="40" height="40">
                     <button class="btn btn-outline-danger btn-sm d-none d-sm-flex align-items-center ms-2 fw-medium">
-                        <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar SesiÃ³n
+                        <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar Sesión
                     </button>
                     <!-- Mobile logout icon -->
                     <button class="btn btn-danger btn-sm d-sm-none">
@@ -98,8 +98,8 @@
                     <!-- Header of the view -->
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
                         <div>
-                            <h2 class="h3 mb-1 fw-bold text-gray-800">Pagos y FacturaciÃ³n</h2>
-                            <p class="text-muted mb-0">GestiÃ³n de membresÃ­as y emisiÃ³n de comprobantes de pago.</p>
+                            <h2 class="h3 mb-1 fw-bold text-gray-800">Pagos y Facturación</h2>
+                            <p class="text-muted mb-0">Gestión de membresías y emisión de comprobantes de pago.</p>
                         </div>
                     </div>
 
@@ -139,9 +139,9 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label for="seleccionarPlan" class="form-label fw-medium text-muted small mb-1">Seleccionar Plan <span class="text-danger">*</span></label>
-                                                        <select class="form-select" id="seleccionarPlan" required onchange="actualizarMonto()">
+                                                        <select class="form-select" id="seleccionarPlan" required>
                                                             <option value="" selected disabled>Elija un plan...</option>
-                                                            <option value="80">Mensual BÃ¡sico - S/ 80.00</option>
+                                                            <option value="80">Mensual Básico - S/ 80.00</option>
                                                             <option value="120">Mensual Ilimitado - S/ 120.00</option>
                                                             <option value="300">Trimestral VIP - S/ 300.00</option>
                                                             <option value="1000">Anual Full - S/ 1000.00</option>
@@ -152,9 +152,9 @@
                                                         <input type="number" step="0.01" class="form-control fw-bold text-success fs-5 bg-light" id="montoPagar" placeholder="0.00" required readonly>
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label for="metodoPago" class="form-label fw-medium text-muted small mb-1">MÃ©todo de Pago <span class="text-danger">*</span></label>
+                                                        <label for="metodoPago" class="form-label fw-medium text-muted small mb-1">Método de Pago <span class="text-danger">*</span></label>
                                                         <select class="form-select" id="metodoPago" required>
-                                                            <option value="" selected disabled>Elija mÃ©todo...</option>
+                                                            <option value="" selected disabled>Elija método...</option>
                                                             <option value="efectivo">Efectivo</option>
                                                             <option value="transferencia">Transferencia Bancaria</option>
                                                             <option value="yape_plin">Yape / Plin</option>
@@ -183,45 +183,13 @@
                                                             <th class="py-3 text-muted fw-semibold border-bottom-0">Socio</th>
                                                             <th class="py-3 text-muted fw-semibold border-bottom-0">Plan</th>
                                                             <th class="py-3 text-muted fw-semibold border-bottom-0">Monto</th>
-                                                            <th class="py-3 text-muted fw-semibold border-bottom-0">MÃ©todo de Pago</th>
-                                                            <th class="py-3 text-muted fw-semibold border-bottom-0">Estado MembresÃ­a</th>
+                                                            <th class="py-3 text-muted fw-semibold border-bottom-0">Método de Pago</th>
+                                                            <th class="py-3 text-muted fw-semibold border-bottom-0">Estado Membresía</th>
                                                             <th class="pe-4 py-3 text-muted fw-semibold text-center border-bottom-0">Acciones</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td class="ps-4 text-gray-800">03/05/2026</td>
-                                                            <td class="fw-semibold text-gray-800">Ana MarÃ­a Torres LÃ³pez</td>
-                                                            <td class="text-muted">Mensual Ilimitado</td>
-                                                            <td class="fw-bold text-gray-800">S/ 120.00</td>
-                                                            <td><span class="badge bg-light text-dark border"><i class="fa-solid fa-mobile-screen text-primary me-1"></i> Yape / Plin</span></td>
-                                                            <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill">Vigente</span></td>
-                                                            <td class="pe-4 text-center">
-                                                                <button class="btn btn-sm btn-light text-primary border rounded shadow-sm" title="Descargar Comprobante"><i class="fa-solid fa-file-pdf"></i></button>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="ps-4 text-gray-800">02/05/2026</td>
-                                                            <td class="fw-semibold text-gray-800">Carlos Mendoza Rojas</td>
-                                                            <td class="text-muted">Trimestral VIP</td>
-                                                            <td class="fw-bold text-gray-800">S/ 300.00</td>
-                                                            <td><span class="badge bg-light text-dark border"><i class="fa-solid fa-money-bill-wave text-success me-1"></i> Efectivo</span></td>
-                                                            <td><span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 rounded-pill">Vencida</span></td>
-                                                            <td class="pe-4 text-center">
-                                                                <button class="btn btn-sm btn-light text-primary border rounded shadow-sm" title="Descargar Comprobante"><i class="fa-solid fa-file-pdf"></i></button>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="ps-4 text-gray-800">28/04/2026</td>
-                                                            <td class="fw-semibold text-gray-800">Roberto Salas Pinto</td>
-                                                            <td class="text-muted">Anual Full</td>
-                                                            <td class="fw-bold text-gray-800">S/ 1000.00</td>
-                                                            <td><span class="badge bg-light text-dark border"><i class="fa-solid fa-building-columns text-secondary me-1"></i> Transferencia</span></td>
-                                                            <td><span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2 py-1 rounded-pill">Cancelada</span></td>
-                                                            <td class="pe-4 text-center">
-                                                                <button class="btn btn-sm btn-light text-primary border rounded shadow-sm" title="Descargar Comprobante"><i class="fa-solid fa-file-pdf"></i></button>
-                                                            </td>
-                                                        </tr>
+                                                    <tbody id="tablaPagos">
+                                                        <!-- Contenido inyectado dinámicamente -->
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -240,44 +208,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="../../public/js/admin/script.js"></script>
-    <script>
-        // JS Function for dynamically updating price
-        function actualizarMonto() {
-            const selectPlan = document.getElementById('seleccionarPlan');
-            const inputMonto = document.getElementById('montoPagar');
-            const precio = selectPlan.value;
-            if (precio) {
-                inputMonto.value = parseFloat(precio).toFixed(2);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Visual styles for tabs when changing
-            const tabsLinks = document.querySelectorAll('#pagosTabs .nav-link');
-            tabsLinks.forEach(tab => {
-                tab.addEventListener('shown.bs.tab', function (event) {
-                    // Remover estilos del tab anterior
-                    event.relatedTarget.classList.remove('border-bottom', 'border-primary', 'border-3', 'text-primary');
-                    event.relatedTarget.classList.add('text-muted');
-                    
-                    // AÃ±adir estilos al tab actual
-                    event.target.classList.remove('text-muted');
-                    event.target.classList.add('border-bottom', 'border-primary', 'border-3', 'text-primary');
-                });
-            });
-
-            // Handle form submission
-            const formRegistroPago = document.getElementById('formRegistroPago');
-            if (formRegistroPago) {
-                formRegistroPago.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    alert('Pago registrado con Ã©xito. Generando comprobante PDF...');
-                    formRegistroPago.reset();
-                    document.getElementById('montoPagar').value = '';
-                });
-            }
-        });
-    </script>
+    <script src="../../public/js/admin/pagos.js"></script>
+<script src="../../public/js/shared/utils.js"></script>
 </body>
 </html>
 

@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FITFAB S.A.C. - Panel de AdministraciÃ³n</title>
+    <title>FITFAB S.A.C. - Panel de Administración</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome for icons -->
@@ -44,7 +44,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="./pagos.html" class="nav-link rounded text-white">
-                            <i class="fa-solid fa-file-invoice-dollar fa-fw me-2"></i> Pagos y FacturaciÃ³n
+                            <i class="fa-solid fa-file-invoice-dollar fa-fw me-2"></i> Pagos y Facturación
                         </a>
                     </li>
                     <li class="nav-item">
@@ -54,7 +54,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="./configuracion.html" class="nav-link rounded text-white">
-                            <i class="fa-solid fa-gear fa-fw me-2"></i> ConfiguraciÃ³n
+                            <i class="fa-solid fa-gear fa-fw me-2"></i> Configuración
                         </a>
                     </li>
                 </ul>
@@ -78,12 +78,12 @@
                     <div class="text-end d-none d-md-block">
                         <p class="m-0 fw-semibold text-dark lh-1">Administrador</p>
                         <small class="text-success fw-medium" style="font-size: 0.75rem;">
-                            <i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> En lÃ­nea
+                            <i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> En línea
                         </small>
                     </div>
                     <img src="https://ui-avatars.com/api/?name=Admin&background=0D6EFD&color=fff&rounded=true" alt="Admin" class="rounded-circle shadow-sm" width="40" height="40">
                     <button class="btn btn-outline-danger btn-sm d-none d-sm-flex align-items-center ms-2 fw-medium">
-                        <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar SesiÃ³n
+                        <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar Sesión
                     </button>
                     <!-- Mobile logout icon -->
                     <button class="btn btn-danger btn-sm d-sm-none">
@@ -98,7 +98,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
                             <h2 class="h3 mb-1 fw-bold text-gray-800">Dashboard General</h2>
-                            <p class="text-muted mb-0">Resumen de las mÃ©tricas principales del gimnasio.</p>
+                            <p class="text-muted mb-0">Resumen de las métricas principales del gimnasio.</p>
                         </div>
                     </div>
                     
@@ -111,7 +111,9 @@
                                     <div class="d-flex justify-content-between align-items-start mb-3">
                                         <div>
                                             <p class="text-muted fw-medium mb-1">Ingresos del mes</p>
-                                            <h3 class="fw-bold mb-0">S/ 56,400</h3>
+                                            <h3 id="ingresosMes" class="fw-bold mb-0">
+                                                <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
+                                            </h3>
                                         </div>
                                         <div class="icon-box bg-success bg-opacity-10 text-success rounded-3 p-3">
                                             <i class="fa-solid fa-sack-dollar fs-4"></i>
@@ -131,7 +133,9 @@
                                     <div class="d-flex justify-content-between align-items-start mb-3">
                                         <div>
                                             <p class="text-muted fw-medium mb-1">Socios Activos</p>
-                                            <h3 class="fw-bold mb-0">1,245</h3>
+                                            <h3 id="sociosActivos" class="fw-bold mb-0">
+                                                <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
+                                            </h3>
                                         </div>
                                         <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-3 p-3">
                                             <i class="fa-solid fa-users fs-4"></i>
@@ -151,7 +155,9 @@
                                     <div class="d-flex justify-content-between align-items-start mb-3">
                                         <div>
                                             <p class="text-muted fw-medium mb-1">Socios Morosos</p>
-                                            <h3 class="fw-bold mb-0">87</h3>
+                                            <h3 id="sociosMorosos" class="fw-bold mb-0">
+                                                <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
+                                            </h3>
                                         </div>
                                         <div class="icon-box bg-danger bg-opacity-10 text-danger rounded-3 p-3">
                                             <i class="fa-solid fa-user-xmark fs-4"></i>
@@ -171,7 +177,9 @@
                                     <div class="d-flex justify-content-between align-items-start mb-3">
                                         <div>
                                             <p class="text-muted fw-medium mb-1">Aforo actual</p>
-                                            <h3 class="fw-bold mb-0">42 / 100</h3>
+                                            <h3 id="aforoActual" class="fw-bold mb-0">
+                                                <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
+                                            </h3>
                                         </div>
                                         <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-3 p-3">
                                             <i class="fa-solid fa-people-group fs-4"></i>
@@ -191,7 +199,7 @@
                         <div class="col-12 col-lg-8">
                             <div class="card border-0 shadow-sm h-100 rounded-4">
                                 <div class="card-body p-4">
-                                    <h5 class="fw-bold mb-4 text-gray-800">Ingresos de los Ãºltimos 6 meses</h5>
+                                    <h5 class="fw-bold mb-4 text-gray-800">Ingresos de los últimos 6 meses</h5>
                                     <div style="position: relative; height:300px; width:100%">
                                         <canvas id="ingresosChart"></canvas>
                                     </div>
@@ -223,6 +231,7 @@
     <!-- Custom JS -->
     <script src="../../public/js/admin/script.js"></script>
     <script src="../../public/js/admin/dashboard.js"></script>
+<script src="../../public/js/shared/utils.js"></script>
 </body>
 </html>
 

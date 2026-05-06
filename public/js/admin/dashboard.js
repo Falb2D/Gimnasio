@@ -1,18 +1,66 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. Bar Chart - Ingresos de los últimos 6 meses
-    const ctxIngresos = document.getElementById('ingresosChart');
-    if (ctxIngresos) {
+document.addEventListener('DOMContentLoaded', () => {
+    cargarMetricas();
+    renderizarGraficos();
+});
+
+async function cargarMetricas() {
+    const elIngresos = document.getElementById('ingresosMes');
+    const elSocios = document.getElementById('sociosActivos');
+    const elMorosos = document.getElementById('sociosMorosos');
+    const elAforo = document.getElementById('aforoActual');
+
+    // Helper para mostrar spinner si la función se llama de nuevo
+    const mostrarLoader = (elemento) => {
+        if (elemento) {
+            elemento.innerHTML = '<span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>';
+        }
+    };
+
+    mostrarLoader(elIngresos);
+    mostrarLoader(elSocios);
+    mostrarLoader(elMorosos);
+    mostrarLoader(elAforo);
+
+    // Simular una petición fetch asíncrona con setTimeout
+    try {
+        const datos = await new Promise((resolve) => {
+            setTimeout(() => {
+                resolve({
+                    ingresosMes: "S/ 62,300",
+                    sociosActivos: 1350,
+                    sociosMorosos: 92,
+                    aforoActual: "55 / 100"
+                });
+            }, 800); // 800ms de retraso simulado
+        });
+
+        // Actualizar el DOM con los datos recibidos (textContent reemplaza el HTML del spinner)
+        if (elIngresos) elIngresos.textContent = datos.ingresosMes;
+        if (elSocios) elSocios.textContent = datos.sociosActivos;
+        if (elMorosos) elMorosos.textContent = datos.sociosMorosos;
+        if (elAforo) elAforo.textContent = datos.aforoActual;
+
+    } catch (error) {
+        console.error("Error al cargar las métricas:", error);
+    }
+}
+
+function renderizarGraficos() {
+    const canvasIngresos = document.getElementById('ingresosChart');
+    const canvasSocios = document.getElementById('sociosChart');
+
+    // Gráfico 1: Ingresos de los últimos 6 meses (Barras)
+    if (canvasIngresos) {
+        const ctxIngresos = canvasIngresos.getContext('2d');
         new Chart(ctxIngresos, {
             type: 'bar',
             data: {
-                labels: ['Noviembre', 'Diciembre', 'Enero', 'Febrero', 'Marzo', 'Abril'],
+                labels: ['Nov', 'Dic', 'Ene', 'Feb', 'Mar', 'Abr'],
                 datasets: [{
                     label: 'Ingresos (S/)',
-                    data: [42000, 45500, 51000, 48200, 53000, 56400],
-                    backgroundColor: '#0d6efd',
-                    borderRadius: 6,
-                    borderWidth: 0,
-                    barPercentage: 0.6
+                    data: [48000, 52000, 60000, 55000, 58000, 62300],
+                    backgroundColor: '#0d6efd', // Azul corporativo / Bootstrap primary
+                    borderRadius: 4
                 }]
             },
             options: {
@@ -20,33 +68,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return ' S/ ' + context.parsed.y.toLocaleString();
-                            }
-                        }
+                        display: false // Ocultar leyenda ya que solo hay una métrica
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: {
-                            color: '#e2e8f0',
-                            drawBorder: false
-                        },
                         ticks: {
                             callback: function(value) {
                                 return 'S/ ' + value.toLocaleString();
                             }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
                         }
                     }
                 }
@@ -54,47 +85,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 2. Doughnut Chart - Estado de los Socios
-    const ctxSocios = document.getElementById('sociosChart');
-    if (ctxSocios) {
+    // Gráfico 2: Estado de los Socios (Doughnut)
+    if (canvasSocios) {
+        const ctxSocios = canvasSocios.getContext('2d');
         new Chart(ctxSocios, {
             type: 'doughnut',
             data: {
                 labels: ['Activos', 'Morosos', 'Inactivos'],
                 datasets: [{
-                    data: [65, 15, 20],
+                    data: [1350, 92, 120],
                     backgroundColor: [
-                        '#198754', // Success green
-                        '#dc3545', // Danger red
-                        '#6c757d'  // Secondary gray
+                        '#198754', // Verde (Activos)
+                        '#dc3545', // Rojo (Morosos)
+                        '#6c757d'  // Gris (Inactivos)
                     ],
-                    borderWidth: 2,
-                    borderColor: '#ffffff',
+                    borderWidth: 0,
                     hoverOffset: 4
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '70%',
                 plugins: {
                     legend: {
                         position: 'bottom',
                         labels: {
                             padding: 20,
                             usePointStyle: true,
-                            pointStyle: 'circle'
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return ' ' + context.label + ': ' + context.parsed + '%';
+                            font: {
+                                size: 13
                             }
                         }
                     }
-                }
+                },
+                cutout: '70%' // Hace que el donut sea más delgado (estilo moderno)
             }
         });
     }
-});
+}

@@ -67,7 +67,7 @@
                     </li>
                     <li class="nav-item mt-2 mt-lg-0 border-top border-secondary pt-2 pt-lg-0 border-lg-0">
                         <a class="nav-link fw-medium text-danger px-3 py-2" href="#">
-                            <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar SesiÃ³n
+                            <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar Sesión
                         </a>
                     </li>
                 </ul>
@@ -82,13 +82,13 @@
                 
                 <!-- Tarjeta Principal: Mi Acceso -->
                 <div class="card border-0 shadow-lg rounded-4 overflow-hidden text-center mt-4">
-                    <!-- DecoraciÃ³n superior azul -->
+                    <!-- Decoración superior azul -->
                     <div class="bg-primary text-white pt-4 pb-5 position-relative">
                         <h6 class="fw-bold m-0 letter-spacing-1"><i class="fa-solid fa-id-card-clip me-2"></i> PASE DE ACCESO</h6>
                     </div>
                     
                     <div class="card-body px-4 pt-4 pb-4 position-relative">
-                        <!-- Avatar superpuesto (se alinea con la intersecciÃ³n) -->
+                        <!-- Avatar superpuesto (se alinea con la intersección) -->
                         <div class="position-absolute top-0 start-50 translate-middle">
                             <img src="https://ui-avatars.com/api/?name=Carlos+Mendoza&background=f8fafc&color=0d6efd&rounded=true&size=120" alt="Avatar Socio" class="rounded-circle border border-4 border-white shadow-sm" style="width: 80px; height: 80px; background: white;">
                         </div>
@@ -100,7 +100,7 @@
                             
                             <!-- Badge de Estado -->
                             <div class="d-inline-block bg-success bg-opacity-10 px-4 py-2 rounded-pill border border-success border-opacity-25 mb-3 shadow-sm">
-                                <span class="fw-bold text-success fs-6"><i class="fa-solid fa-circle-check me-2"></i> MembresÃ­a Activa</span>
+                                <span class="fw-bold text-success fs-6"><i class="fa-solid fa-circle-check me-2"></i> Membresía Activa</span>
                             </div>
                         </div>
 
@@ -117,12 +117,12 @@
                         </div>
                         
                         <!-- Contenedor QR -->
-                        <p class="text-muted small fw-semibold mb-2 mt-4 text-uppercase">Tu CÃ³digo de Ingreso</p>
+                        <p class="text-muted small fw-semibold mb-2 mt-4 text-uppercase">Tu Código de Ingreso</p>
                         <div class="qr-container bg-white border border-light">
-                            <!-- El QR se dibuja aquÃ­ -->
+                            <!-- El QR se dibuja aquí -->
                             <div id="qrcode"></div>
                         </div>
-                        <p class="text-muted mt-3 mb-0" style="font-size: 0.75rem;"><i class="fa-solid fa-rotate text-primary me-1"></i> VÃ¡lido para acceso automÃ¡tico en recepciÃ³n.</p>
+                        <p class="text-muted mt-3 mb-0" style="font-size: 0.75rem;"><i class="fa-solid fa-rotate text-primary me-1"></i> Válido para acceso automático en recepción.</p>
                     </div>
                 </div>
 
@@ -132,12 +132,12 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- QRCode.js LibrerÃ­a -->
+    <!-- QRCode.js Librería -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Renderizar el CÃ³digo QR usando la librerÃ­a QRCode.js
+            // Renderizar el Código QR usando la librería QRCode.js
             const qrContainer = document.getElementById('qrcode');
             
             // Instanciar el QR
@@ -147,10 +147,11 @@
                 height: 220,
                 colorDark : "#1e293b", // Slate 800 (color oscuro elegante)
                 colorLight : "#ffffff", // Blanco
-                correctLevel : QRCode.CorrectLevel.H // Alto nivel de correcciÃ³n de errores
+                correctLevel : QRCode.CorrectLevel.H // Alto nivel de corrección de errores
             });
         });
     </script>
+<script src="../../public/js/shared/utils.js"></script>
 </body>
 </html>
 
