@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -144,7 +144,7 @@
                                         <div class="tab-pane fade show active" id="v-pills-planes" role="tabpanel" aria-labelledby="v-pills-planes-tab" tabindex="0">
                                             <div class="d-flex justify-content-between align-items-center mb-4">
                                                 <h5 class="fw-bold text-gray-800 m-0">Planes de Membresía Activos</h5>
-                                                <button class="btn btn-primary btn-sm px-3 shadow-sm"><i class="fa-solid fa-plus me-2"></i> Crear Nuevo Plan</button>
+                                                <button class="btn btn-primary btn-sm px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalCrearPlan"><i class="fa-solid fa-plus me-2"></i> Crear Nuevo Plan</button>
                                             </div>
                                             <div class="table-responsive">
                                                 <table class="table table-hover align-middle border rounded overflow-hidden">
@@ -153,10 +153,11 @@
                                                             <th class="ps-4 py-3 text-muted fw-semibold">Nombre del Plan</th>
                                                             <th class="py-3 text-muted fw-semibold text-center">Duración (Días)</th>
                                                             <th class="py-3 text-muted fw-semibold text-end">Precio (S/)</th>
-                                                            <th class="pe-4 py-3 text-muted fw-semibold text-center">Estado</th>
+                                                            <th class="py-3 text-muted fw-semibold text-center">Estado</th>
+                                                            <th class="pe-4 py-3 text-muted fw-semibold text-center">Acciones</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody id="tablaPlanesBody">
                                                         <tr>
                                                             <td class="ps-4 fw-medium text-gray-800">Mensual Básico</td>
                                                             <td class="text-center">30</td>
@@ -202,7 +203,7 @@
                                                             <th class="pe-4 py-3 text-muted fw-semibold text-center">Estado</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody id="tablaUsuariosBody">
                                                         <tr>
                                                             <td class="ps-4 fw-medium text-gray-800">Fabricio Administrador</td>
                                                             <td class="text-muted">admin@fitfab.com</td>
@@ -306,42 +307,42 @@
         </div>
     </div>
 
+    <!-- Modal Nuevo Plan -->
+    <div class="modal fade" id="modalCrearPlan" tabindex="-1" aria-labelledby="modalCrearPlanLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-bottom pb-3">
+                    <h5 class="modal-title fw-bold text-gray-800" id="modalCrearPlanLabel">Crear Nuevo Plan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formCrearPlan">
+                        <div class="mb-4">
+                            <label for="nombrePlan" class="form-label fw-medium text-muted small mb-1">Nombre del Plan <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nombrePlan" placeholder="Ej. Plan Estudiante" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="duracionPlan" class="form-label fw-medium text-muted small mb-1">Duración en Días <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="duracionPlan" placeholder="Ej. 30" required min="1">
+                        </div>
+                        <div class="mb-4">
+                            <label for="precioPlan" class="form-label fw-medium text-muted small mb-1">Precio (S/) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="precioPlan" placeholder="Ej. 100.50" step="0.01" required min="0">
+                        </div>
+                        <div class="d-grid gap-2 mt-2">
+                            <button type="submit" class="btn btn-primary py-2 fw-medium"><i class="fa-solid fa-save me-2"></i> Guardar Plan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="../../public/js/admin/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Handle Form Nuevo Staff
-            const formNuevoStaff = document.getElementById('formNuevoStaff');
-            if (formNuevoStaff) {
-                formNuevoStaff.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const nombre = document.getElementById('nombreStaff').value;
-                    alert('El usuario ' + nombre + ' ha sido creado exitosamente en el sistema.');
-                    
-                    // Hide Modal using Bootstrap API
-                    const modalEl = document.getElementById('modalNuevoStaff');
-                    const modalInstance = bootstrap.Modal.getInstance(modalEl);
-                    if (modalInstance) {
-                        modalInstance.hide();
-                    }
-                    
-                    formNuevoStaff.reset();
-                });
-            }
-
-            // Handle Datos Gimnasio
-            const formDatos = document.getElementById('formDatosGimnasio');
-            if (formDatos) {
-                formDatos.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    alert('Datos del gimnasio actualizados y guardados correctamente en el sistema.');
-                });
-            }
-        });
-    </script>
+    <script src="../../public/js/admin/configuracion.js"></script>
 <script src="../../public/js/shared/utils.js"></script>
 </body>
 </html>
