@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -127,11 +127,11 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label for="planCobro" class="form-label fw-medium text-muted small mb-1">Plan a cobrar <span class="text-danger">*</span></label>
-                                                        <select class="form-select form-select-lg" id="planCobro" required onchange="actualizarMonto()">
+                                                        <select class="form-select form-select-lg" id="planCobro" required>
                                                             <option value="" selected disabled>Seleccione un plan...</option>
-                                                            <option value="80">Mensual Básico - S/ 80.00</option>
-                                                            <option value="120">Mensual Ilimitado - S/ 120.00</option>
-                                                            <option value="300">Trimestral VIP - S/ 300.00</option>
+                                                            <option value="Mensual Básico">Mensual Básico - S/ 80.00</option>
+                                                            <option value="Mensual Ilimitado">Mensual Ilimitado - S/ 120.00</option>
+                                                            <option value="Trimestral VIP">Trimestral VIP - S/ 300.00</option>
                                                         </select>
                                                     </div>
                                                     
@@ -167,7 +167,7 @@
                                 <div class="tab-pane fade" id="caja-diaria-tab-pane" role="tabpanel" tabindex="0">
                                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 px-2 gap-3">
                                         <h5 class="fw-bold text-gray-800 m-0">Movimientos de Hoy</h5>
-                                        <div class="bg-success bg-opacity-10 text-success fw-bold px-4 py-2 rounded-pill border border-success border-opacity-25 fs-5">
+                                        <div class="bg-success bg-opacity-10 text-success fw-bold px-4 py-2 rounded-pill border border-success border-opacity-25 fs-5" id="textoTotalCaja">
                                             <i class="fa-solid fa-sack-dollar me-2"></i> Total en Caja: S/ 540.00
                                         </div>
                                     </div>
@@ -185,7 +185,7 @@
                                                             <th class="pe-4 py-3 text-muted fw-semibold text-center">Acciones</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody id="tablaHistorialCaja">
                                                         <tr>
                                                             <td class="ps-4 text-gray-800 fw-medium">10:45 AM</td>
                                                             <td class="fw-semibold text-gray-800">Lucía Mendoza</td>
@@ -225,47 +225,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="../../public/js/admin/script.js"></script>
-    <script>
-        // Actualizar Monto dinámico
-        function actualizarMonto() {
-            const selectPlan = document.getElementById('planCobro');
-            const inputMonto = document.getElementById('montoRecibido');
-            const precio = selectPlan.value;
-            if (precio) {
-                inputMonto.value = parseFloat(precio).toFixed(2);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Estilos para las Tabs (como en el Admin, visual enhancements)
-            const tabsLinks = document.querySelectorAll('#recepcionPagosTabs .nav-link');
-            tabsLinks.forEach(tab => {
-                tab.addEventListener('shown.bs.tab', function (event) {
-                    event.relatedTarget.classList.remove('border-bottom', 'border-primary', 'border-3', 'text-primary');
-                    event.relatedTarget.classList.add('text-muted');
-                    event.target.classList.remove('text-muted');
-                    event.target.classList.add('border-bottom', 'border-primary', 'border-3', 'text-primary');
-                });
-            });
-
-            // Procesar cobro
-            const formCobro = document.getElementById('formNuevoCobro');
-            if (formCobro) {
-                formCobro.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const socio = document.getElementById('buscarSocio').value;
-                    const monto = document.getElementById('montoRecibido').value;
-                    
-                    alert('Cobro de S/ ' + monto + ' registrado con éxito para ' + socio + '. Imprimiendo comprobante...');
-                    
-                    formCobro.reset();
-                    document.getElementById('montoRecibido').value = '';
-                });
-            }
-        });
-    </script>
-<script src="../../public/js/shared/utils.js"></script>
+    <script src="../../public/js/shared/utils.js"></script>
+    <script src="../../public/js/recepcion/pagos.js"></script>
 </body>
 </html>
 

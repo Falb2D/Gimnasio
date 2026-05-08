@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -197,52 +197,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="../../public/js/admin/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const btnValidar = document.getElementById('btnValidar');
-            const inputIngreso = document.getElementById('inputIngreso');
-            
-            const estados = [
-                'estadoEsperando',
-                'estadoPermitido',
-                'estadoDenegado',
-                'estadoInvalido'
-            ];
-            
-            let estadoActual = 0; // Starts at 0 (Esperando)
-
-            if (btnValidar) {
-                btnValidar.addEventListener('click', function() {
-                    // Hide all states
-                    estados.forEach(id => {
-                        document.getElementById(id).classList.add('d-none');
-                    });
-                    
-                    // Cycle to next state (1, 2, 3), skipping 0
-                    estadoActual++;
-                    if (estadoActual > 3) {
-                        estadoActual = 1;
-                    }
-                    
-                    // Show new state
-                    document.getElementById(estados[estadoActual]).classList.remove('d-none');
-                    
-                    // Add subtle scale animation
-                    const panel = document.getElementById(estados[estadoActual]).querySelector('.card');
-                    if (panel) {
-                        panel.style.transform = 'scale(0.95)';
-                        panel.style.transition = 'transform 0.2s ease-out';
-                        setTimeout(() => {
-                            panel.style.transform = 'scale(1)';
-                        }, 50);
-                    }
-                    
-                    // Clear input
-                    if(inputIngreso) inputIngreso.value = '';
-                });
-            }
-        });
-    </script>
+    <script src="../../public/js/recepcion/acceso.js"></script>
 <script src="../../public/js/shared/utils.js"></script>
 </body>
 </html>
