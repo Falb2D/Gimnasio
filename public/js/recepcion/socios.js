@@ -1,40 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 1. Mock Data
+    // 1. Mock Data (6 usuarios de prueba)
     const sociosMock = [
-        {
-            dni: '76543210',
-            nombres: 'Carlos',
-            apellidos: 'Mendoza Rojas',
-            plan: 'Mensual Ilimitado',
-            vencimiento: '15/06/2026',
-            estado: 'Activo'
-        },
-        {
-            dni: '43210987',
-            nombres: 'Ana María',
-            apellidos: 'Torres',
-            plan: 'Trimestral VIP',
-            vencimiento: '01/05/2026',
-            estado: 'Moroso'
-        },
-        {
-            dni: '12345678',
-            nombres: 'Roberto',
-            apellidos: 'Salas Pinto',
-            plan: 'Mensual Básico',
-            vencimiento: '--/--/----',
-            estado: 'Inactivo'
-        },
-        {
-            dni: '87654321',
-            nombres: 'Lucía',
-            apellidos: 'Gómez',
-            plan: 'Anual Premium',
-            vencimiento: '10/12/2026',
-            estado: 'Activo'
-        }
+        { dni: '76543210', nombres: 'Carlos', apellidos: 'Mendoza Rojas', estado: 'Activo', plan: 'Mensual Ilimitado', vencimiento: '15/06/2026' },
+        { dni: '43210987', nombres: 'Ana María', apellidos: 'Torres', estado: 'Moroso', plan: 'Trimestral VIP', vencimiento: '01/05/2026' },
+        { dni: '12345678', nombres: 'Roberto', apellidos: 'Salas Pinto', estado: 'Inactivo', plan: 'Mensual Básico', vencimiento: '--/--/----' },
+        { dni: '87654321', nombres: 'Lucía', apellidos: 'Gómez', estado: 'Activo', plan: 'Anual Premium', vencimiento: '10/12/2026' },
+        { dni: '11223344', nombres: 'Luis', apellidos: 'Perez', estado: 'Activo', plan: 'Trimestral VIP', vencimiento: '12/08/2026' },
+        { dni: '99887766', nombres: 'Marta', apellidos: 'Gomez', estado: 'Inactivo', plan: 'Ninguno', vencimiento: '--/--/----' }
     ];
+
+    // Reinicio forzado para solucionar el error de estructura y tener 6 usuarios base
+    localStorage.setItem('sociosDB', JSON.stringify(sociosMock));
 
     const tablaSociosBody = document.getElementById('tablaSociosBody');
     const inputBuscarSocio = document.getElementById('inputBuscarSocio');
@@ -87,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="pe-4 text-center">
                     <button type="button" class="btn btn-sm btn-light text-primary border rounded me-1 btn-accion" data-accion="Ver perfil" title="Ver Perfil"><i class="fa-regular fa-id-badge"></i></button>
                     <button type="button" class="btn btn-sm btn-light text-success border rounded me-1 btn-accion" data-accion="Renovar plan" title="Renovar Plan"><i class="fa-solid fa-arrows-rotate"></i></button>
-                    <button type="button" class="btn btn-sm btn-light text-dark border rounded btn-accion" data-accion="Generar QR" title="Generar código QR"><i class="fa-solid fa-qrcode"></i></button>
+                    <button type="button" class="btn btn-sm btn-light text-dark border rounded me-1 btn-accion" data-accion="Generar QR" title="Generar código QR"><i class="fa-solid fa-qrcode"></i></button>
+                    <button type="button" class="btn btn-sm btn-light text-danger border rounded" onclick="cancelarPlan('${socio.dni}')" title="Cancelar Plan"><i class="fa-solid fa-ban"></i></button>
                 </td>
             `;
             tablaSociosBody.appendChild(tr);
@@ -114,7 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (inputBuscarSocio) {
         inputBuscarSocio.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase().trim();
-            const sociosFiltrados = sociosMock.filter(socio => 
+            const db = JSON.parse(localStorage.getItem('sociosDB')) || [];
+            const sociosFiltrados = db.filter(socio => 
                 socio.dni.includes(term) || 
                 socio.nombres.toLowerCase().includes(term) ||
                 socio.apellidos.toLowerCase().includes(term)
@@ -147,12 +126,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 estado: 'Inactivo'
             };
 
+            // Leer db
+            let db = JSON.parse(localStorage.getItem('sociosDB')) || [];
             // Agregar al inicio
-            sociosMock.unshift(nuevoSocio);
+            db.unshift(nuevoSocio);
+            // Guardar
+            localStorage.setItem('sociosDB', JSON.stringify(db));
 
             // Actualizar UI
-            renderizarTabla(sociosMock);
-            actualizarContador(sociosMock.length);
+            renderizarTabla(db);
+            actualizarContador(db.length);
 
             // Cerrar modal
             const modalEl = document.getElementById('modalNuevoSocio');
@@ -168,7 +151,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Inicialización
-    renderizarTabla(sociosMock);
-    actualizarContador(sociosMock.length);
+    const sociosIniciales = JSON.parse(localStorage.getItem('sociosDB')) || [];
+    renderizarTabla(sociosIniciales);
+    actualizarContador(sociosIniciales.length);
 
+    // 6. Función Global para Cancelar Plan
+    window.cancelarPlan = (dni) => {
+        if (confirm('¿Estás seguro de que deseas cancelar el plan actual de este socio? Pasará a estado Inactivo.')) {
+            // Leer base de datos
+            let db = JSON.parse(localStorage.getItem('sociosDB')) || [];
+            
+            // Buscar socio
+            const index = db.findIndex(s => s.dni === dni);
+            if (index !== -1) {
+                // Actualizar propiedades
+                db[index].estado = 'Inactivo';
+                db[index].plan = 'Ninguno';
+                db[index].vencimiento = '--/--/----';
+                
+                // Guardar cambios
+                localStorage.setItem('sociosDB', JSON.stringify(db));
+                
+                // Re-renderizar UI
+                renderizarTabla(db);
+                actualizarContador(db.length);
+                
+                // Limpiar buscador si tenía texto para no confundir
+                if (inputBuscarSocio) inputBuscarSocio.value = '';
+            }
+        }
+    };
 });

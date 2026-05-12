@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -32,14 +32,22 @@
             margin: 0 auto;
             border-radius: 4px;
         }
+        .nav-link-hover {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link-hover:hover {
+            color: #0d6efd !important;
+            background-color: rgba(13, 110, 253, 0.05);
+            border-radius: 0.375rem;
+        }
     </style>
 </head>
 <body>
 
     <!-- Navbar Superior -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm py-3">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm py-3">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="./socio.html">
+            <a class="navbar-brand d-flex align-items-center text-dark" href="./socio.html">
                 <div class="bg-primary text-white rounded d-inline-flex justify-content-center align-items-center me-2 shadow-sm" style="width: 32px; height: 32px;">
                     <i class="fa-solid fa-dumbbell fs-6"></i>
                 </div>
@@ -51,22 +59,22 @@
             <div class="collapse navbar-collapse" id="navbarSocio">
                 <ul class="navbar-nav ms-auto mt-3 mt-lg-0 gap-2 text-center text-lg-start">
                     <li class="nav-item">
-                        <a class="nav-link active fw-medium px-3 py-2 rounded bg-primary bg-opacity-25" href="./socio.html">
+                        <a class="nav-link nav-link-hover active fw-medium px-3 py-2 rounded text-primary bg-primary bg-opacity-10" href="./socio.html">
                             <i class="fa-solid fa-qrcode me-2"></i> Mi QR
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fw-medium px-3 py-2" href="./socio_clases.html">
+                        <a class="nav-link nav-link-hover fw-medium px-3 py-2 text-dark" href="./socio_clases.html">
                             <i class="fa-regular fa-calendar-check me-2"></i> Reservar Clases
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fw-medium px-3 py-2" href="./socio_pagos.html">
+                        <a class="nav-link nav-link-hover fw-medium px-3 py-2 text-dark" href="./socio_pagos.html">
                             <i class="fa-solid fa-file-invoice-dollar me-2"></i> Mis Pagos
                         </a>
                     </li>
-                    <li class="nav-item mt-2 mt-lg-0 border-top border-secondary pt-2 pt-lg-0 border-lg-0">
-                        <a class="nav-link fw-medium text-danger px-3 py-2" href="#">
+                    <li class="nav-item mt-2 mt-lg-0 border-top border-light pt-2 pt-lg-0 border-lg-0">
+                        <a class="nav-link nav-link-hover fw-medium text-danger px-3 py-2" href="#">
                             <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar Sesión
                         </a>
                     </li>
@@ -99,7 +107,7 @@
                             <p class="text-muted mb-3 fw-medium small">Socio #12345</p>
                             
                             <!-- Badge de Estado -->
-                            <div class="d-inline-block bg-success bg-opacity-10 px-4 py-2 rounded-pill border border-success border-opacity-25 mb-3 shadow-sm">
+                            <div id="badgeEstado" class="d-inline-block bg-success bg-opacity-10 px-4 py-2 rounded-pill border border-success border-opacity-25 mb-3 shadow-sm">
                                 <span class="fw-bold text-success fs-6"><i class="fa-solid fa-circle-check me-2"></i> Membresía Activa</span>
                             </div>
                         </div>
@@ -135,23 +143,9 @@
     <!-- QRCode.js Librería -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Renderizar el Código QR usando la librería QRCode.js
-            const qrContainer = document.getElementById('qrcode');
-            
-            // Instanciar el QR
-            new QRCode(qrContainer, {
-                text: "QR-SOCIO-12345",
-                width: 220,
-                height: 220,
-                colorDark : "#1e293b", // Slate 800 (color oscuro elegante)
-                colorLight : "#ffffff", // Blanco
-                correctLevel : QRCode.CorrectLevel.H // Alto nivel de corrección de errores
-            });
-        });
-    </script>
+
 <script src="../../public/js/shared/utils.js"></script>
+<script src="../../public/js/socio/app.js"></script>
 </body>
 </html>
 

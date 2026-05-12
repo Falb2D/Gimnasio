@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -110,31 +110,8 @@
                                             <th class="pe-4 py-3 text-muted fw-semibold text-center">Estado Actual</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="ps-4 fw-medium text-gray-800">M-001</td>
-                                            <td class="fw-semibold text-gray-800">Cinta de Correr Pro 9000</td>
-                                            <td class="text-muted"><i class="fa-solid fa-location-dot me-1 text-secondary opacity-50"></i> Salón Cardio 1</td>
-                                            <td class="pe-4 text-center"><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 rounded-pill">Operativo</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="ps-4 fw-medium text-gray-800">M-014</td>
-                                            <td class="fw-semibold text-gray-800">Máquina de Remo Concept2</td>
-                                            <td class="text-muted"><i class="fa-solid fa-location-dot me-1 text-secondary opacity-50"></i> Zona Funcional</td>
-                                            <td class="pe-4 text-center"><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 rounded-pill">Operativo</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="ps-4 fw-medium text-gray-800">M-005</td>
-                                            <td class="fw-semibold text-gray-800">Bicicleta Elíptica LifeFitness</td>
-                                            <td class="text-muted"><i class="fa-solid fa-location-dot me-1 text-secondary opacity-50"></i> Salón Cardio 2</td>
-                                            <td class="pe-4 text-center"><span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-1 rounded-pill">En Mantenimiento</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="ps-4 fw-medium text-gray-800">M-022</td>
-                                            <td class="fw-semibold text-gray-800">Prensa de Piernas 45Â°</td>
-                                            <td class="text-muted"><i class="fa-solid fa-location-dot me-1 text-secondary opacity-50"></i> Zona Pesas Libres</td>
-                                            <td class="pe-4 text-center"><span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-1 rounded-pill">Fuera de Servicio</span></td>
-                                        </tr>
+                                    <tbody id="tbodyEquipos">
+                                        <!-- Renderizado dinámicamente -->
                                     </tbody>
                                 </table>
                             </div>
@@ -159,10 +136,7 @@
                             <label for="selectEquipo" class="form-label fw-medium text-gray-800">Equipo Afectado <span class="text-danger">*</span></label>
                             <select class="form-select" id="selectEquipo" required>
                                 <option value="" selected disabled>Seleccione el equipo...</option>
-                                <option value="M-001">M-001 - Cinta de Correr Pro 9000</option>
-                                <option value="M-005">M-005 - Bicicleta Elíptica LifeFitness</option>
-                                <option value="M-014">M-014 - Máquina de Remo Concept2</option>
-                                <option value="M-022">M-022 - Prensa de Piernas 45Â°</option>
+                                <!-- Renderizado dinámicamente -->
                             </select>
                         </div>
                         <div class="mb-3">
@@ -191,26 +165,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="../../public/js/admin/script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const formReporte = document.getElementById('formReporteIncidencia');
-            if(formReporte) {
-                formReporte.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const equipo = document.getElementById('selectEquipo').options[document.getElementById('selectEquipo').selectedIndex].text;
-                    const tipo = document.getElementById('selectTipoFalla').value;
-                    
-                    alert('Reporte ' + tipo + ' enviado con éxito para el equipo:\n' + equipo + '.\n\nEl administrador de mantenimiento ha sido notificado.');
-                    
-                    formReporte.reset();
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalReporte'));
-                    if(modal) modal.hide();
-                });
-            }
-        });
-    </script>
 <script src="../../public/js/shared/utils.js"></script>
+<script src="../../public/js/entrenador/equipos.js"></script>
 </body>
 </html>
 

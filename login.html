@@ -27,20 +27,20 @@
             </div>
 
             <div class="login-body">
-                <form id="formLogin">
+                <form id="formLogin" autocomplete="off">
                     <div class="mb-4">
-                        <label for="email" class="form-label fw-bold text-secondary small text-uppercase" style="letter-spacing: 0.5px;">Correo Electrónico</label>
+                        <label for="inputUsuario" class="form-label fw-bold text-secondary small text-uppercase" style="letter-spacing: 0.5px;">Usuario o DNI</label>
                         <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
-                            <span class="input-group-text"><i class="fa-regular fa-envelope"></i></span>
-                            <input type="email" class="form-control fs-6" id="email" placeholder="usuario@fitfab.com" required>
+                            <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" class="form-control fs-6" id="inputUsuario" placeholder="Ingresa tu usuario o DNI" autocomplete="off" required>
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label for="password" class="form-label fw-bold text-secondary small text-uppercase" style="letter-spacing: 0.5px;">Contraseña</label>
+                        <label for="inputPassword" class="form-label fw-bold text-secondary small text-uppercase" style="letter-spacing: 0.5px;">Contraseña</label>
                         <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
                             <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                            <input type="password" class="form-control fs-6" id="password" placeholder="••••••••" required>
+                            <input type="password" class="form-control fs-6" id="inputPassword" placeholder="Ingresa tu contraseña" required>
                             <!-- Botón de ojito -->
                             <span class="input-group-text password-toggle" id="togglePassword">
                                 <i class="fa-regular fa-eye" id="eyeIcon"></i>
@@ -48,7 +48,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-lg w-100 btn-login shadow-sm mt-3">
+                    <button type="submit" id="btnSubmit" class="btn btn-primary btn-lg w-100 btn-login shadow-sm mt-3">
                         Iniciar Sesión <i class="fa-solid fa-arrow-right ms-2"></i>
                     </button>
                 </form>
@@ -71,7 +71,7 @@
             
             // 1. Lógica para Mostrar/Ocultar contraseña (Ojito)
             const togglePassword = document.getElementById('togglePassword');
-            const passwordInput = document.getElementById('password');
+            const passwordInput = document.getElementById('inputPassword');
             const eyeIcon = document.getElementById('eyeIcon');
 
             togglePassword.addEventListener('click', function () {
@@ -88,42 +88,9 @@
                     eyeIcon.classList.add('fa-eye');
                 }
             });
-
-            // 2. Simular Login (Captura de Submit)
-            const formLogin = document.getElementById('formLogin');
-            
-            formLogin.addEventListener('submit', function(e) {
-                e.preventDefault(); // Evita recargar la página
-                
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                
-                // Imprimir credenciales en consola como se solicitó
-                console.log('--- INTENTO DE INICIO DE SESIÓN (STAFF) ---');
-                console.log('Email:', email);
-                console.log('Password:', password);
-                
-                // Animación visual de "cargando" en el botón
-                const btnSubmit = formLogin.querySelector('button[type="submit"]');
-                const originalText = btnSubmit.innerHTML;
-                
-                btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Autenticando...';
-                btnSubmit.disabled = true;
-                
-                // Simular un delay de conexión a la base de datos (1.5 segundos)
-                setTimeout(() => {
-                    // Restaurar botón a su estado original
-                    btnSubmit.innerHTML = originalText;
-                    btnSubmit.disabled = false;
-                    
-                    alert(`Login simulado correctamente para:\n${email}\n\nRevisa la consola (F12) para ver los datos capturados.`);
-                    
-                    // En el proyecto real, aquí rediriges dependiendo del rol:
-                    // window.location.href = 'views/admin/index.html';
-                }, 1500);
-            });
         });
     </script>
-<script src="./public/js/shared/utils.js"></script>
+    <script src="./public/js/shared/utils.js"></script>
+    <script src="./public/js/login.js"></script>
 </body>
 </html>

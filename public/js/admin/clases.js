@@ -1,44 +1,13 @@
 // public/js/admin/clases.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Array de objetos (Mock Data)
-    const clasesMock = [
-        {
-            id: 1,
-            nombre: 'Yoga Nidra',
-            horario: 'Hoy, 18:00 - 19:00 hrs',
-            coach: 'Valeria S.',
-            salon: 'Salón Zen',
-            reservas_actuales: 12,
-            capacidad_max: 20,
-            icono: 'fa-spa'
-        },
-        {
-            id: 2,
-            nombre: 'Spinning Pro',
-            horario: 'Hoy, 19:30 - 20:30 hrs',
-            coach: 'Marcos T.',
-            salon: 'Salón Cardio 1',
-            reservas_actuales: 25,
-            capacidad_max: 25,
-            icono: 'fa-person-biking'
-        },
-        {
-            id: 3,
-            nombre: 'CrossFit WOD',
-            horario: 'Mañana, 07:00 - 08:30 hrs',
-            coach: 'Luis R.',
-            salon: 'Box Funcional',
-            reservas_actuales: 14,
-            capacidad_max: 15,
-            icono: 'fa-dumbbell'
-        }
-    ];
+    // 1. Array de objetos (desde localStorage)
+    let clasesMock = JSON.parse(localStorage.getItem('clasesDB')) || [];
 
     const contenedorClases = document.getElementById('contenedorClases');
     const formNuevaClase = document.getElementById('formNuevaClase');
 
-    // Función para ver asistentes (Simulación con Modal)
+    // Función para ver asistentes
     const verAsistentes = (nombreClase) => {
         // Obtener el nombre de la clase y asignarlo al título del modal
         const tituloModal = document.getElementById('nombreClaseModal');
@@ -46,14 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
             tituloModal.textContent = nombreClase;
         }
 
-        // Inyectar los nombres simulados en la lista (ul)
+        // Leer siempre los datos más recientes
+        const clasesDB = JSON.parse(localStorage.getItem('clasesDB')) || [];
+        const claseEncontrada = clasesDB.find(c => c.nombre === nombreClase);
+        
+        // Inyectar los nombres reales en la lista (ul)
         const listaAsistentes = document.getElementById('listaAsistentesModal');
         if (listaAsistentes) {
-            listaAsistentes.innerHTML = `
-                <li class="list-group-item px-0 py-3 border-bottom"><i class="fa-solid fa-user text-secondary me-3"></i> Ana Torres</li>
-                <li class="list-group-item px-0 py-3 border-bottom"><i class="fa-solid fa-user text-secondary me-3"></i> Luis Fernández</li>
-                <li class="list-group-item px-0 py-3 border-bottom border-0"><i class="fa-solid fa-user text-secondary me-3"></i> Juan Gonzáles</li>
-            `;
+            if (claseEncontrada && claseEncontrada.inscritos && claseEncontrada.inscritos.length > 0) {
+                listaAsistentes.innerHTML = claseEncontrada.inscritos.map((inscrito, index) => `
+                    <li class="list-group-item px-0 py-3 ${index !== claseEncontrada.inscritos.length - 1 ? 'border-bottom' : 'border-bottom border-0'}">
+                        <i class="fa-solid fa-user text-secondary me-3"></i> ${inscrito.nombre}
+                    </li>
+                `).join('');
+            } else {
+                listaAsistentes.innerHTML = `<li class="list-group-item px-0 py-3 text-muted">No hay inscritos.</li>`;
+            }
         }
 
         // Mostrar el modal en pantalla usando la API nativa de Bootstrap
@@ -70,10 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Limpiar contenedor
         contenedorClases.innerHTML = '';
+        
+        // Leer datos frescos desde localStorage
+        const clasesDB = JSON.parse(localStorage.getItem('clasesDB')) || [];
 
-        clasesMock.forEach(clase => {
+        clasesDB.forEach(clase => {
             // Lógica de Aforo y Colores
-            const porcentaje = Math.round((clase.reservas_actuales / clase.capacidad_max) * 100);
+            const reservasActuales = clase.inscritos ? clase.inscritos.length : (clase.reservas_actuales || 0);
+            const porcentaje = Math.round((reservasActuales / clase.capacidad_max) * 100);
             const esLleno = porcentaje >= 100;
 
             const colorPrincipal = esLleno ? 'danger' : (porcentaje >= 80 ? 'warning' : 'primary');
@@ -104,11 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         <div class="mt-4">
                             <div class="d-flex justify-content-between align-items-end mb-1">
-                                <span class="small fw-medium ${esLleno ? 'text-danger' : 'text-muted'}">Reservas actuales: ${clase.reservas_actuales} / ${clase.capacidad_max}</span>
+                                <span class="small fw-medium ${esLleno ? 'text-danger' : 'text-muted'}">Reservas actuales: ${reservasActuales} / ${clase.capacidad_max}</span>
                                 <span class="small fw-bold text-${colorPrincipal}">${porcentaje}%</span>
                             </div>
                             <div class="progress" style="height: 8px;">
-                                <div class="progress-bar bg-${colorPrincipal} rounded-pill" role="progressbar" style="width: ${porcentaje}%;" aria-valuenow="${clase.reservas_actuales}" aria-valuemin="0" aria-valuemax="${clase.capacidad_max}"></div>
+                                <div class="progress-bar bg-${colorPrincipal} rounded-pill" role="progressbar" style="width: ${porcentaje}%;" aria-valuenow="${reservasActuales}" aria-valuemin="0" aria-valuemax="${clase.capacidad_max}"></div>
                             </div>
                         </div>
                     </div>
@@ -156,17 +137,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth()+1).padStart(2, '0')}/${dateObj.getFullYear()}, ${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')} hrs`;
             }
 
-            // Agregar nueva clase al array de simulación
-            clasesMock.push({
+            // Agregar nueva clase
+            const nuevaClase = {
                 id: Date.now(),
                 nombre: nombre,
                 horario: formattedDate,
                 coach: coach,
                 salon: salon,
-                reservas_actuales: 0, // Inicia sin reservas
                 capacidad_max: capacidad,
-                icono: 'fa-calendar-check' // Ícono genérico
-            });
+                icono: 'fa-calendar-check',
+                bg_icono: 'bg-primary',
+                text_icono: 'text-primary',
+                inscritos: [] // Inicia sin reservas
+            };
+
+            // Leer de localStorage, actualizar y guardar
+            const clasesActuales = JSON.parse(localStorage.getItem('clasesDB')) || [];
+            clasesActuales.push(nuevaClase);
+            localStorage.setItem('clasesDB', JSON.stringify(clasesActuales));
 
             // Re-renderizar la grilla para mostrar la nueva tarjeta
             renderizarClases();

@@ -1,56 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Función auxiliar para generar inscritos mock de forma dinámica
-    const generarInscritos = (cantidad) => {
-        const arr = [];
-        for (let i = 1; i <= cantidad; i++) {
-            arr.push({
-                dni: '7000' + i.toString().padStart(4, '0'),
-                nombre: `Socio de Prueba ${i}`
-            });
-        }
-        return arr;
-    };
-
-    // 1. Mock Data (El aforo ahora depende estrictamente de la longitud del array inscritos)
-    const clasesRecepcionMock = [
-        {
-            id: 1,
-            nombre: 'Yoga Nidra',
-            horario: '18:00 - 19:00 hrs',
-            coach: 'Valeria S.',
-            salon: 'Salón Zen',
-            capacidad_max: 20,
-            icono: 'fa-spa',
-            bg_icono: 'bg-primary',
-            text_icono: 'text-primary',
-            inscritos: generarInscritos(12)
-        },
-        {
-            id: 2,
-            nombre: 'Spinning Pro',
-            horario: '19:30 - 20:30 hrs',
-            coach: 'Marcos T.',
-            salon: 'Salón Cardio 1',
-            capacidad_max: 25,
-            icono: 'fa-person-biking',
-            bg_icono: 'bg-danger',
-            text_icono: 'text-danger',
-            inscritos: generarInscritos(25)
-        },
-        {
-            id: 3,
-            nombre: 'CrossFit WOD',
-            horario: '20:30 - 21:30 hrs',
-            coach: 'Luis R.',
-            salon: 'Box Funcional',
-            capacidad_max: 20,
-            icono: 'fa-dumbbell',
-            bg_icono: 'bg-warning',
-            text_icono: 'text-warning',
-            inscritos: generarInscritos(18) // 90% (Casi Lleno)
-        }
-    ];
+    // 1. Obtener datos desde localStorage (inicializado por storage.js)
+    let clasesRecepcionMock = JSON.parse(localStorage.getItem('clasesDB')) || [];
 
     let claseSeleccionadaId = null;
 
@@ -102,6 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Renderizado Dinámico de Clases
     const renderizarClases = () => {
         if (!contenedorClases) return;
+        
+        clasesRecepcionMock = JSON.parse(localStorage.getItem('clasesDB')) || [];
         
         contenedorClases.innerHTML = '';
         
@@ -206,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Renderizar Offcanvas (Lista de Inscritos y Cabecera)
     const renderizarOffcanvas = (claseId) => {
+        clasesRecepcionMock = JSON.parse(localStorage.getItem('clasesDB')) || [];
         const clase = clasesRecepcionMock.find(c => c.id === claseId);
         if (!clase) return;
 
@@ -270,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. Lógica para Cancelar Reserva
     const cancelarReserva = (claseId, socioDni) => {
+        clasesRecepcionMock = JSON.parse(localStorage.getItem('clasesDB')) || [];
         const claseIndex = clasesRecepcionMock.findIndex(c => c.id === claseId);
         if (claseIndex !== -1) {
             const clase = clasesRecepcionMock[claseIndex];
@@ -277,8 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Remover al socio del array de inscritos
             clase.inscritos = clase.inscritos.filter(i => i.dni !== socioDni);
 
-            // La variable reservas_actuales ya no es necesaria porque ahora 
-            // el flujo dependerá estrictamente del tamaño del array (.length)
+            // Sobrescribir localStorage
+            localStorage.setItem('clasesDB', JSON.stringify(clasesRecepcionMock));
 
             // Re-renderizar ambas vistas para actualizar la UI en vivo
             renderizarOffcanvas(claseId);
@@ -292,6 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             if (claseSeleccionadaId !== null) {
+                clasesRecepcionMock = JSON.parse(localStorage.getItem('clasesDB')) || [];
                 const claseIndex = clasesRecepcionMock.findIndex(c => c.id === claseSeleccionadaId);
                 
                 if (claseIndex !== -1) {
@@ -306,6 +262,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             dni: dni,
                             nombre: 'Socio Nuevo (' + dni + ')'
                         });
+                        
+                        // Sobrescribir localStorage
+                        localStorage.setItem('clasesDB', JSON.stringify(clasesRecepcionMock));
                         
                         // Actualizar UI
                         renderizarClases();

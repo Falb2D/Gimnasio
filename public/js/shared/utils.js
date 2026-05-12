@@ -53,16 +53,16 @@ function verificarSesion() {
  */
 function cerrarSesion() {
     localStorage.removeItem('token');
+    localStorage.removeItem('sesionRol'); // Limpiar la sesión guardada del login mock
     
-    // Calcular el path correcto hacia views/login.html
+    // Calcular el path correcto hacia login.html (que está en la raíz)
     const path = window.location.pathname;
     
-    // Si estamos dentro de un subdirectorio de views (ej. views/admin/)
-    // usamos '../login.html' para retroceder una carpeta hacia views/
     if (path.includes('/views/')) {
-        window.location.href = '../login.html';
+        // Si estamos dentro de views/rol/archivo.html, retrocedemos 2 niveles
+        window.location.replace('../../login.html');
     } else {
         // Si estamos en la raíz del proyecto
-        window.location.href = './views/login.html';
+        window.location.replace('./login.html');
     }
 }
