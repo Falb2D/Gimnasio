@@ -1,5 +1,5 @@
-// Mock Data para Planes
-let planesMock = [
+// Mock Data para Planes iniciales si no hay localStorage
+const planesIniciales = [
     { nombre: 'Mensual Básico', duracion: 30, precio: 80.00, estado: 'Activo' },
     { nombre: 'Mensual Ilimitado', duracion: 30, precio: 120.00, estado: 'Activo' },
     { nombre: 'Trimestral VIP', duracion: 90, precio: 300.00, estado: 'Activo' },
@@ -14,6 +14,11 @@ let usuariosMock = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Inicializar planesDB en localStorage si no existe
+    if (!localStorage.getItem('planesDB')) {
+        localStorage.setItem('planesDB', JSON.stringify(planesIniciales));
+    }
+
     // 1. Renderizar Tablas Iniciales
     renderizarPlanes();
     renderizarUsuarios();
@@ -22,33 +27,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const formNuevoStaff = document.getElementById('formNuevoStaff');
     if (formNuevoStaff) {
         formNuevoStaff.addEventListener('submit', function(e) {
-            e.preventDefault(); // Evitar recarga de página
+            e.preventDefault(); 
             
-            // Recolectar valores
             const nombres = document.getElementById('nombreStaff').value;
             const email = document.getElementById('emailStaff').value;
-            const password = document.getElementById('passStaff').value; // Se simula encriptación internamente
+            const password = document.getElementById('passStaff').value; 
             const rolValue = document.getElementById('rolStaff').value;
             
-            // Mapear el valor del select al texto real del rol
             let rolFormateado = '';
             if (rolValue === 'admin') rolFormateado = 'Administrador';
             else if (rolValue === 'reception') rolFormateado = 'Recepcionista';
             else if (rolValue === 'trainer') rolFormateado = 'Entrenador';
             
-            // Crear nuevo objeto usuario
             const nuevoUsuario = {
                 nombres: nombres,
                 email: email,
                 rol: rolFormateado,
-                estado: 'Activo' // Por defecto activo
+                estado: 'Activo' 
             };
             
-            // Añadir al mock y renderizar nuevamente
             usuariosMock.push(nuevoUsuario);
             renderizarUsuarios();
             
-            // Cerrar el modal con Bootstrap 5 API
             const modalEl = document.getElementById('modalNuevoStaff');
             let modalInstance = bootstrap.Modal.getInstance(modalEl);
             if (!modalInstance) {
@@ -56,9 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             modalInstance.hide();
             
-            // Limpiar formulario y mostrar alerta
             formNuevoStaff.reset();
-            alert('Usuario creado correctamente');
+            if(typeof Swal !== 'undefined') {
+                Swal.fire({ title: 'Éxito', text: 'Usuario creado correctamente', icon: 'success' });
+            } else {
+                alert('Usuario creado correctamente');
+            }
         });
     }
 
@@ -66,26 +69,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const formCrearPlan = document.getElementById('formCrearPlan');
     if (formCrearPlan) {
         formCrearPlan.addEventListener('submit', function(e) {
-            e.preventDefault(); // Evitar recarga de página
+            e.preventDefault(); 
             
-            // Recolectar valores
             const nombre = document.getElementById('nombrePlan').value;
             const duracion = parseInt(document.getElementById('duracionPlan').value);
             const precio = parseFloat(document.getElementById('precioPlan').value);
             
-            // Crear nuevo objeto plan
             const nuevoPlan = {
                 nombre: nombre,
                 duracion: duracion,
                 precio: precio,
-                estado: 'Activo' // Por defecto activo
+                estado: 'Activo' 
             };
             
-            // Añadir al mock y renderizar nuevamente
-            planesMock.push(nuevoPlan);
+            let planesDB = JSON.parse(localStorage.getItem('planesDB')) || [];
+            planesDB.push(nuevoPlan);
+            localStorage.setItem('planesDB', JSON.stringify(planesDB));
+            
             renderizarPlanes();
             
-            // Cerrar el modal con Bootstrap 5 API
             const modalEl = document.getElementById('modalCrearPlan');
             let modalInstance = bootstrap.Modal.getInstance(modalEl);
             if (!modalInstance) {
@@ -93,9 +95,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             modalInstance.hide();
             
-            // Limpiar formulario y mostrar alerta
             formCrearPlan.reset();
-            alert('Plan creado exitosamente');
+            if(typeof Swal !== 'undefined') {
+                Swal.fire({ title: 'Éxito', text: 'Plan creado exitosamente', icon: 'success' });
+            } else {
+                alert('Plan creado exitosamente');
+            }
         });
     }
 
@@ -104,8 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (formDatos) {
         formDatos.addEventListener('submit', function(e) {
             e.preventDefault();
-            // Simula petición exitosa al servidor
-            alert('Datos del negocio actualizados exitosamente');
+            if(typeof Swal !== 'undefined') {
+                Swal.fire({ title: 'Éxito', text: 'Datos del negocio actualizados', icon: 'success' });
+            } else {
+                alert('Datos del negocio actualizados exitosamente');
+            }
         });
     }
 });
@@ -116,8 +124,9 @@ function renderizarPlanes() {
     if (!tbody) return;
     
     tbody.innerHTML = '';
+    let planesDB = JSON.parse(localStorage.getItem('planesDB')) || [];
     
-    planesMock.forEach((plan, index) => {
+    planesDB.forEach((plan, index) => {
         let badgeHTML = '';
         if (plan.estado === 'Activo') {
             badgeHTML = `<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill">Activo</span>`;
@@ -134,12 +143,60 @@ function renderizarPlanes() {
             <td class="text-end fw-bold ${styleClass}">S/ ${plan.precio.toFixed(2)}</td>
             <td class="text-center">${badgeHTML}</td>
             <td class="pe-4 text-center">
+                <button class="btn btn-sm btn-outline-primary rounded me-1" onclick="editarPrecioPlan('${plan.nombre}')" title="Editar Precio">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
                 <button class="btn btn-sm btn-outline-secondary" onclick="toggleEstadoPlan(${index})" title="Cambiar Estado">
                     <i class="fa-solid fa-rotate"></i>
                 </button>
             </td>
         `;
         tbody.appendChild(tr);
+    });
+}
+
+window.editarPrecioPlan = function(nombrePlan) {
+    let planesDB = JSON.parse(localStorage.getItem('planesDB')) || [];
+    const index = planesDB.findIndex(p => p.nombre === nombrePlan);
+
+    if (index === -1) return;
+    const plan = planesDB[index];
+
+    Swal.fire({
+        title: 'Editar Precio',
+        text: `Ingrese el nuevo precio para el plan ${nombrePlan}`,
+        input: 'number',
+        inputValue: plan.precio,
+        inputAttributes: {
+            step: '0.01',
+            min: '0'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#0d6efd',
+        inputValidator: (value) => {
+            if (!value || value < 0) {
+                return 'Por favor, ingrese un precio válido';
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            planesDB[index].precio = parseFloat(result.value);
+            localStorage.setItem('planesDB', JSON.stringify(planesDB));
+            
+            renderizarPlanes();
+            
+            Swal.fire({
+                title: '¡Actualizado!',
+                text: 'El precio del plan ha sido modificado.',
+                icon: 'success',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
     });
 }
 
@@ -152,7 +209,6 @@ function renderizarUsuarios() {
     
     usuariosMock.forEach(usuario => {
         let badgeClass = '';
-        // Asignar color de badge según el rol solicitado
         if (usuario.rol === 'Administrador') {
             badgeClass = 'bg-dark';
         } else if (usuario.rol === 'Recepcionista') {
@@ -163,7 +219,6 @@ function renderizarUsuarios() {
             badgeClass = 'bg-secondary';
         }
         
-        // Icono de estado
         let statusIcon = '';
         if (usuario.estado === 'Activo') {
             statusIcon = '<i class="fa-solid fa-circle-check text-success fs-5"></i>';
@@ -184,8 +239,10 @@ function renderizarUsuarios() {
 
 // Función global para cambiar el estado de un plan
 window.toggleEstadoPlan = function(index) {
-    if (planesMock[index]) {
-        planesMock[index].estado = planesMock[index].estado === 'Activo' ? 'Inactivo' : 'Activo';
-        renderizarPlanes(); // Re-renderizar la tabla para mostrar el cambio visual
+    let planesDB = JSON.parse(localStorage.getItem('planesDB')) || [];
+    if (planesDB[index]) {
+        planesDB[index].estado = planesDB[index].estado === 'Activo' ? 'Inactivo' : 'Activo';
+        localStorage.setItem('planesDB', JSON.stringify(planesDB));
+        renderizarPlanes();
     }
 };

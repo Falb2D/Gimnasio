@@ -2,7 +2,17 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Array de objetos (desde localStorage)
-    let clasesMock = JSON.parse(localStorage.getItem('clasesDB')) || [];
+    let clasesDB = JSON.parse(localStorage.getItem('clasesDB'));
+    
+    // Robustez en la Data Inicial
+    if (!clasesDB || clasesDB.length === 0) {
+        clasesDB = [
+            { id: 1, nombre: 'Yoga Nidra', horario: 'Hoy, 18:00 - 19:00 hrs', coach: 'Valeria S.', salon: 'Salón Zen', capacidad_max: 20, inscritos: [{nombre: 'Ana'}, {nombre: 'Luis'}], icono: 'fa-solid fa-spa' },
+            { id: 2, nombre: 'Spinning Pro', horario: 'Hoy, 19:30 - 20:30 hrs', coach: 'Marcos T.', salon: 'Salón Cardio 1', capacidad_max: 25, inscritos: [], icono: 'fa-solid fa-person-biking' },
+            { id: 3, nombre: 'CrossFit WOD', horario: 'Mañana, 07:00 - 08:30 hrs', coach: 'Luis R.', salon: 'Box Funcional', capacidad_max: 15, inscritos: [{nombre: 'Pedro'}], icono: 'fa-solid fa-dumbbell' }
+        ];
+        localStorage.setItem('clasesDB', JSON.stringify(clasesDB));
+    }
 
     const contenedorClases = document.getElementById('contenedorClases');
     const formNuevaClase = document.getElementById('formNuevaClase');
@@ -53,13 +63,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         clasesDB.forEach(clase => {
             // Lógica de Aforo y Colores
-            const reservasActuales = clase.inscritos ? clase.inscritos.length : (clase.reservas_actuales || 0);
-            const porcentaje = Math.round((reservasActuales / clase.capacidad_max) * 100);
+            const reservasActuales = clase.inscritos ? clase.inscritos.length : 0;
+            
+            // Prevención de NaN (Validación ternaria solicitada)
+            const porcentaje = clase.capacidad_max ? Math.round((reservasActuales / clase.capacidad_max) * 100) : 0;
+            
             const esLleno = porcentaje >= 100;
 
             const colorPrincipal = esLleno ? 'danger' : (porcentaje >= 80 ? 'warning' : 'primary');
             const textoBadge = esLleno ? 'Lleno' : 'Disponible';
             const colorBadge = esLleno ? 'danger' : 'success';
+
+            // Renderizado de Íconos: fallback por defecto
+            const iconoClase = clase.icono || 'fa-regular fa-calendar-check';
 
             // Crear el elemento de la tarjeta
             const card = document.createElement('div');
@@ -70,11 +86,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
                         <h5 class="fw-bold text-gray-800 mb-0 d-flex align-items-center">
                             <div class="bg-${colorPrincipal} bg-opacity-10 text-${colorPrincipal} rounded p-2 me-2 d-inline-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
-                                <i class="fa-solid ${clase.icono} fs-5"></i>
+                                <i class="${iconoClase} fs-5"></i>
                             </div>
                             ${clase.nombre}
                         </h5>
-                        <span class="badge bg-${colorBadge} bg-opacity-10 text-${colorBadge} border border-${colorBadge} border-opacity-25 rounded-pill px-3 py-1">${textoBadge}</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-${colorBadge} bg-opacity-10 text-${colorBadge} border border-${colorBadge} border-opacity-25 rounded-pill px-3 py-1">${textoBadge}</span>
+                            <button class="btn btn-sm btn-outline-danger border-0 rounded-circle" onclick="eliminarClase('${clase.id}')" title="Eliminar clase">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
@@ -85,11 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         <div class="mt-4">
                             <div class="d-flex justify-content-between align-items-end mb-1">
-                                <span class="small fw-medium ${esLleno ? 'text-danger' : 'text-muted'}">Reservas actuales: ${reservasActuales} / ${clase.capacidad_max}</span>
+                                <span class="small fw-medium ${esLleno ? 'text-danger' : 'text-muted'}">Reservas actuales: ${reservasActuales} / ${clase.capacidad_max || 0}</span>
                                 <span class="small fw-bold text-${colorPrincipal}">${porcentaje}%</span>
                             </div>
                             <div class="progress" style="height: 8px;">
-                                <div class="progress-bar bg-${colorPrincipal} rounded-pill" role="progressbar" style="width: ${porcentaje}%;" aria-valuenow="${reservasActuales}" aria-valuemin="0" aria-valuemax="${clase.capacidad_max}"></div>
+                                <div class="progress-bar bg-${colorPrincipal} rounded-pill" role="progressbar" style="width: ${porcentaje}%;" aria-valuenow="${reservasActuales}" aria-valuemin="0" aria-valuemax="${clase.capacidad_max || 0}"></div>
                             </div>
                         </div>
                     </div>
@@ -145,9 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 coach: coach,
                 salon: salon,
                 capacidad_max: capacidad,
-                icono: 'fa-calendar-check',
-                bg_icono: 'bg-primary',
-                text_icono: 'text-primary',
+                icono: 'fa-regular fa-calendar-check', // Ícono por defecto
                 inscritos: [] // Inicia sin reservas
             };
 
@@ -170,4 +189,37 @@ document.addEventListener('DOMContentLoaded', () => {
             formNuevaClase.reset();
         });
     }
+
+    // 4. Lógica para eliminar clase
+    window.eliminarClase = function(id) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¿Estás seguro de que deseas eliminar esta clase? Esta acción no se puede deshacer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let clasesDB = JSON.parse(localStorage.getItem('clasesDB')) || [];
+                // Filtrar y excluir la clase con el id recibido
+                clasesDB = clasesDB.filter(clase => String(clase.id) !== String(id));
+                
+                // Guardar el nuevo array en localStorage
+                localStorage.setItem('clasesDB', JSON.stringify(clasesDB));
+                
+                // Re-renderizar la grilla inmediatamente
+                renderizarClases();
+                
+                // Mensaje de confirmación con SweetAlert2
+                Swal.fire(
+                    '¡Eliminada!',
+                    'La clase ha sido borrada correctamente.',
+                    'success'
+                );
+            }
+        });
+    };
 });
