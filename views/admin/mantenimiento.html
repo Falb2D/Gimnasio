@@ -114,7 +114,7 @@
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <div>
                                             <p class="text-muted fw-medium mb-1">Equipos Operativos</p>
-                                            <h3 id="countOperativos" class="fw-bold mb-0">45</h3>
+                                            <h3 id="countOperativos" class="fw-bold mb-0">—</h3>
                                         </div>
                                         <div class="icon-box bg-success bg-opacity-10 text-success rounded-3 p-3">
                                             <i class="fa-solid fa-check-circle fs-4"></i>
@@ -129,7 +129,7 @@
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <div>
                                             <p class="text-muted fw-medium mb-1">En Mantenimiento</p>
-                                            <h3 id="countMantenimiento" class="fw-bold mb-0">3</h3>
+                                            <h3 id="countMantenimiento" class="fw-bold mb-0">—</h3>
                                         </div>
                                         <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-3 p-3">
                                             <i class="fa-solid fa-screwdriver-wrench fs-4"></i>
@@ -144,7 +144,7 @@
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <div>
                                             <p class="text-muted fw-medium mb-1">Fuera de Servicio</p>
-                                            <h3 id="countFuera" class="fw-bold mb-0">1</h3>
+                                            <h3 id="countFuera" class="fw-bold mb-0">—</h3>
                                         </div>
                                         <div class="icon-box bg-danger bg-opacity-10 text-danger rounded-3 p-3">
                                             <i class="fa-solid fa-ban fs-4"></i>
@@ -171,60 +171,8 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td class="ps-4 text-gray-800 fw-medium">EQ-001</td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="bg-light rounded p-2 me-3 border">
-                                                        <i class="fa-solid fa-person-running text-secondary fs-5" style="width:24px; text-align:center;"></i>
-                                                    </div>
-                                                    <div>
-                                                        <span class="fw-semibold text-gray-800 d-block">Cinta de Correr ProForm</span>
-                                                        <small class="text-muted">Serie: PF-2023X</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-gray-800">Zona Cardio</td>
-                                            <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill"><i class="fa-solid fa-check me-1"></i> Operativo</span></td>
-                                            <td class="pe-4 text-center">
-                                                <button class="btn btn-sm btn-light text-secondary rounded" title="Ver Historial"><i class="fa-solid fa-clock-rotate-left"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="ps-4 text-gray-800 fw-medium">EQ-014</td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="bg-light rounded p-2 me-3 border">
-                                                        <i class="fa-solid fa-bicycle text-secondary fs-5" style="width:24px; text-align:center;"></i>
-                                                    </div>
-                                                    <div>
-                                                        <span class="fw-semibold text-gray-800 d-block">Bicicleta Estática LifeFitness</span>
-                                                        <small class="text-muted">Serie: LF-C1</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-gray-800">Sala Spinning</td>
-                                            <td><span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-1 rounded-pill"><i class="fa-solid fa-screwdriver-wrench me-1"></i> En Mantenimiento</span></td>
-                                            <td class="pe-4 text-center">
-                                                <button class="btn btn-sm btn-light text-secondary rounded" title="Ver Historial"><i class="fa-solid fa-clock-rotate-left"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="ps-4 text-gray-800 fw-medium">EQ-032</td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="bg-light rounded p-2 me-3 border">
-                                                        <i class="fa-solid fa-dumbbell text-secondary fs-5" style="width:24px; text-align:center;"></i>
-                                                    </div>
-                                                    <div>
-                                                        <span class="fw-semibold text-gray-800 d-block">Máquina de Poleas Cruzadas</span>
-                                                        <small class="text-muted">Serie: MG-300</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-gray-800">Zona de Fuerza</td>
-                                            <td><span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 rounded-pill"><i class="fa-solid fa-ban me-1"></i> Fuera de Servicio</span></td>
-                                            <td class="pe-4 text-center">
-                                                <button class="btn btn-sm btn-light text-secondary rounded" title="Ver Historial"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                                            <td colspan="5" class="text-center py-4">
+                                                <span class="spinner-border spinner-border-sm text-secondary"></span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -253,9 +201,6 @@
                             <label for="equipoAfectado" class="form-label fw-medium text-muted small mb-1">Equipo afectado <span class="text-danger">*</span></label>
                             <select class="form-select" id="equipoAfectado" required>
                                 <option value="" selected disabled>Buscar y seleccionar equipo...</option>
-                                <option value="EQ-001">EQ-001 - Cinta de Correr ProForm</option>
-                                <option value="EQ-014">EQ-014 - Bicicleta Estática LifeFitness</option>
-                                <option value="EQ-032">EQ-032 - Máquina de Poleas Cruzadas</option>
                             </select>
                         </div>
                         
