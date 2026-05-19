@@ -1,263 +1,220 @@
 // public/js/admin/mantenimiento.js
+// Backend: Supabase
 
-document.addEventListener('DOMContentLoaded', () => {
+let equiposCache = [];
 
-    // 1. Inicialización de DB en localStorage
-    if (!localStorage.getItem('equiposDB')) {
-        const equiposMock = [
-            { codigo: 'EQ-001', nombre: 'Cinta de Correr ProForm', serie: 'PF-2023X', ubicacion: 'Zona Cardio', estado: 'Operativo', icono: 'fa-person-running' },
-            { codigo: 'EQ-014', nombre: 'Bicicleta Estática LifeFitness', serie: 'LF-C1', ubicacion: 'Sala Spinning', estado: 'En Mantenimiento', icono: 'fa-bicycle' },
-            { codigo: 'EQ-032', nombre: 'Máquina de Poleas Cruzadas', serie: 'MG-300', ubicacion: 'Zona de Fuerza', estado: 'Fuera de Servicio', icono: 'fa-dumbbell' },
-            { codigo: 'EQ-045', nombre: 'Prensa de Piernas Hammer Strength', serie: 'HS-LEG1', ubicacion: 'Zona de Fuerza', estado: 'Operativo', icono: 'fa-dumbbell' },
-            { codigo: 'EQ-056', nombre: 'Elíptica Precor', serie: 'PR-E800', ubicacion: 'Zona Cardio', estado: 'Operativo', icono: 'fa-person-walking' }
-        ];
-        localStorage.setItem('equiposDB', JSON.stringify(equiposMock));
-    }
+const formatearFecha = (fechaISO) => {
+  if (!fechaISO) return 'N/A';
+  const d = new Date(fechaISO);
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+};
 
-    if (!localStorage.getItem('incidenciasDB')) {
-        localStorage.setItem('incidenciasDB', JSON.stringify([]));
-    }
+const getBadgeEquipo = (estado) => {
+  switch (estado) {
+    case 'Operativo':
+      return { clase: 'bg-success bg-opacity-10 text-success border border-success border-opacity-25', icono: 'fa-check' };
+    case 'En Mantenimiento':
+      return { clase: 'bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25', icono: 'fa-screwdriver-wrench' };
+    case 'Fuera de Servicio':
+      return { clase: 'bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25', icono: 'fa-ban' };
+    default:
+      return { clase: 'bg-secondary bg-opacity-10 text-secondary border', icono: 'fa-circle' };
+  }
+};
 
-    renderizarTabla();
-    actualizarResumen();
-    llenarSelectEquipos();
+// ===================== EQUIPOS =====================
 
-    const formIncidencia = document.getElementById('formIncidencia');
-    if (formIncidencia) {
-        formIncidencia.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const selectEl = document.getElementById('equipoAfectado');
-            const codigo = selectEl.value;
-            
-            // Capturar datos del formulario
-            const radioTipoMant = document.querySelector('input[name="tipoMantenimiento"]:checked');
-            const tipoMant = radioTipoMant ? radioTipoMant.value : 'No especificado';
-            
-            const radioEstado = document.querySelector('input[name="estadoIncidencia"]:checked');
-            const nuevoEstado = radioEstado ? radioEstado.value : 'En Mantenimiento';
-            
-            const desc = document.getElementById('descProblema').value;
-            const responsable = document.getElementById('responsableMant').value;
-            
-            // Fecha actual
-            const hoy = new Date();
-            const fecha = `${String(hoy.getDate()).padStart(2, '0')}/${String(hoy.getMonth() + 1).padStart(2, '0')}/${hoy.getFullYear()}`;
+async function cargarEquipos() {
+  const tbody = document.querySelector('table tbody');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4"><span class="spinner-border spinner-border-sm"></span></td></tr>';
 
-            // Actualizar estado en equiposDB
-            let equiposDB = JSON.parse(localStorage.getItem('equiposDB')) || [];
-            const index = equiposDB.findIndex(eq => eq.codigo === codigo);
-            if (index !== -1) {
-                equiposDB[index].estado = nuevoEstado;
-                localStorage.setItem('equiposDB', JSON.stringify(equiposDB));
-            }
+  const { data, error } = await window.supabaseClient
+    .from('equipos')
+    .select('*')
+    .order('codigo', { ascending: true });
 
-            // Guardar en incidenciasDB
-            let incidenciasDB = JSON.parse(localStorage.getItem('incidenciasDB')) || [];
-            incidenciasDB.unshift({
-                codigo: codigo,
-                fecha: fecha,
-                tipo: tipoMant,
-                descripcion: desc,
-                responsable: responsable
-            });
-            localStorage.setItem('incidenciasDB', JSON.stringify(incidenciasDB));
+  if (error) {
+    console.error('Error al cargar equipos:', error);
+    if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">Error al cargar equipos.</td></tr>';
+    return;
+  }
 
-            // Reflejar cambios
-            renderizarTabla();
-            actualizarResumen();
-
-            // Cerrar panel lateral
-            const offcanvasEl = document.getElementById('offcanvasIncidencia');
-            let offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasEl);
-            if (!offcanvasInstance) {
-                offcanvasInstance = new bootstrap.Offcanvas(offcanvasEl);
-            }
-            offcanvasInstance.hide();
-            
-            // Limpiar y notificar
-            formIncidencia.reset();
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    title: '¡Registrado!',
-                    text: 'Incidencia registrada correctamente',
-                    icon: 'success',
-                    confirmButtonColor: '#ffc107',
-                    confirmButtonText: 'Aceptar'
-                });
-            } else {
-                alert('Incidencia registrada correctamente');
-            }
-        });
-    }
-});
+  equiposCache = data || [];
+  renderizarTabla();
+  actualizarResumen();
+  llenarSelectEquipos();
+}
 
 function renderizarTabla() {
-    const tbody = document.querySelector('table tbody');
-    if (!tbody) return;
-    
-    tbody.innerHTML = '';
-    let equiposDB = JSON.parse(localStorage.getItem('equiposDB')) || [];
-    
-    equiposDB.forEach(equipo => {
-        let badgeClass = '';
-        let badgeIcon = '';
-        
-        switch(equipo.estado) {
-            case 'Operativo':
-                badgeClass = 'bg-success bg-opacity-10 text-success border border-success border-opacity-25';
-                badgeIcon = 'fa-check';
-                break;
-            case 'En Mantenimiento':
-                badgeClass = 'bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25';
-                badgeIcon = 'fa-screwdriver-wrench';
-                break;
-            case 'Fuera de Servicio':
-                badgeClass = 'bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25';
-                badgeIcon = 'fa-ban';
-                break;
-        }
+  const tbody = document.querySelector('table tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
 
-        // Botón operativo (solo si no está operativo)
-        const btnOperativoHTML = equipo.estado !== 'Operativo' 
-            ? `<button class="btn btn-sm btn-outline-success rounded ms-1 btn-operativo" title="Marcar Operativo"><i class="fa-solid fa-check"></i></button>`
-            : '';
+  if (equiposCache.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No hay equipos registrados.</td></tr>';
+    return;
+  }
 
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td class="ps-4 text-gray-800 fw-medium">${equipo.codigo}</td>
-            <td>
-                <div class="d-flex align-items-center">
-                    <div class="bg-light rounded p-2 me-3 border">
-                        <i class="fa-solid ${equipo.icono} text-secondary fs-5" style="width:24px; text-align:center;"></i>
-                    </div>
-                    <div>
-                        <span class="fw-semibold text-gray-800 d-block">${equipo.nombre}</span>
-                        <small class="text-muted">Serie: ${equipo.serie}</small>
-                    </div>
-                </div>
-            </td>
-            <td class="text-gray-800">${equipo.ubicacion}</td>
-            <td><span class="badge ${badgeClass} px-2 py-1 rounded-pill"><i class="fa-solid ${badgeIcon} me-1"></i> ${equipo.estado}</span></td>
-            <td class="pe-4 text-center">
-                <button class="btn btn-sm btn-light text-secondary rounded btn-historial" title="Ver Historial"><i class="fa-solid fa-clock-rotate-left"></i></button>
-                ${btnOperativoHTML}
-            </td>
-        `;
-        
-        // Evento para Ver Historial
-        tr.querySelector('.btn-historial').addEventListener('click', () => {
-            verHistorial(equipo.codigo);
-        });
+  equiposCache.forEach(equipo => {
+    const badge = getBadgeEquipo(equipo.estado);
+    const btnOperativo = equipo.estado !== 'Operativo'
+      ? `<button class="btn btn-sm btn-outline-success rounded ms-1 btn-operativo"
+          data-codigo="${equipo.id}" title="Marcar Operativo">
+          <i class="fa-solid fa-check"></i>
+        </button>`
+      : '';
 
-        // Evento para Marcar Operativo
-        const btnOperativo = tr.querySelector('.btn-operativo');
-        if (btnOperativo) {
-            btnOperativo.addEventListener('click', () => {
-                marcarOperativo(equipo.codigo);
-            });
-        }
-        
-        tbody.appendChild(tr);
-    });
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="ps-4 text-gray-800 fw-medium">${equipo.codigo}</td>
+      <td>
+        <div class="d-flex align-items-center">
+          <div class="bg-light rounded p-2 me-3 border">
+            <i class="fa-solid ${equipo.icono||'fa-dumbbell'} text-secondary fs-5" style="width:24px;text-align:center;"></i>
+          </div>
+          <div>
+            <span class="fw-semibold text-gray-800 d-block">${equipo.nombre}</span>
+            <small class="text-muted">Serie: ${equipo.serie||'N/A'}</small>
+          </div>
+        </div>
+      </td>
+      <td class="text-gray-800">${equipo.ubicacion||'N/A'}</td>
+      <td>
+        <span class="badge ${badge.clase} px-2 py-1 rounded-pill">
+          <i class="fa-solid ${badge.icono} me-1"></i>${equipo.estado}
+        </span>
+      </td>
+      <td class="pe-4 text-center">
+        <button class="btn btn-sm btn-light text-secondary rounded btn-historial"
+          data-id="${equipo.id}" title="Ver Historial">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </button>
+        ${btnOperativo}
+      </td>
+    `;
+
+    tr.querySelector('.btn-historial').addEventListener('click', () => verHistorial(equipo.id));
+    const btnOp = tr.querySelector('.btn-operativo');
+    if (btnOp) btnOp.addEventListener('click', () => marcarOperativo(equipo.id));
+
+    tbody.appendChild(tr);
+  });
 }
 
 function actualizarResumen() {
-    let equiposDB = JSON.parse(localStorage.getItem('equiposDB')) || [];
-    
-    const operativos = equiposDB.filter(e => e.estado === 'Operativo').length;
-    const enMantenimiento = equiposDB.filter(e => e.estado === 'En Mantenimiento').length;
-    const fueraDeServicio = equiposDB.filter(e => e.estado === 'Fuera de Servicio').length;
+  const operativos      = equiposCache.filter(e => e.estado === 'Operativo').length;
+  const enMantenimiento = equiposCache.filter(e => e.estado === 'En Mantenimiento').length;
+  const fueraDeServicio = equiposCache.filter(e => e.estado === 'Fuera de Servicio').length;
 
-    const countOperativos = document.getElementById('countOperativos');
-    const countMantenimiento = document.getElementById('countMantenimiento');
-    const countFuera = document.getElementById('countFuera');
+  const el1 = document.getElementById('countOperativos');
+  const el2 = document.getElementById('countMantenimiento');
+  const el3 = document.getElementById('countFuera');
 
-    if (countOperativos) countOperativos.textContent = operativos;
-    if (countMantenimiento) countMantenimiento.textContent = enMantenimiento;
-    if (countFuera) countFuera.textContent = fueraDeServicio;
+  if (el1) el1.textContent = operativos;
+  if (el2) el2.textContent = enMantenimiento;
+  if (el3) el3.textContent = fueraDeServicio;
 }
 
 function llenarSelectEquipos() {
-    const select = document.getElementById('equipoAfectado');
-    if (!select) return;
-    
-    select.innerHTML = '<option value="" selected disabled>Buscar y seleccionar equipo...</option>';
-    
-    let equiposDB = JSON.parse(localStorage.getItem('equiposDB')) || [];
-    equiposDB.forEach(equipo => {
-        const option = document.createElement('option');
-        option.value = equipo.codigo;
-        option.textContent = `${equipo.codigo} - ${equipo.nombre}`;
-        select.appendChild(option);
+  const select = document.getElementById('equipoAfectado');
+  if (!select) return;
+  select.innerHTML = '<option value="" selected disabled>Buscar y seleccionar equipo...</option>';
+  equiposCache.forEach(eq => {
+    const opt = document.createElement('option');
+    opt.value = eq.id;
+    opt.textContent = `${eq.codigo} - ${eq.nombre}`;
+    select.appendChild(opt);
+  });
+}
+
+async function marcarOperativo(equipoId) {
+  const { error } = await window.supabaseClient
+    .from('equipos')
+    .update({ estado: 'Operativo' })
+    .eq('id', equipoId);
+
+  if (error) { console.error('Error marcarOperativo:', error); return; }
+  await cargarEquipos();
+  Swal.fire({ title: '¡Actualizado!', text: 'Equipo marcado como operativo', icon: 'success', confirmButtonColor: '#198754' });
+}
+
+async function verHistorial(equipoId) {
+  const { data, error } = await window.supabaseClient
+    .from('incidencias')
+    .select('*')
+    .eq('equipo_id', equipoId)
+    .order('fecha', { ascending: false });
+
+  if (error || !data || data.length === 0) {
+    Swal.fire({ title: 'Sin incidencias', text: 'Este equipo no tiene incidencias registradas', icon: 'info', confirmButtonColor: '#0d6efd', confirmButtonText: 'Entendido' });
+    return;
+  }
+
+  const equipo = equiposCache.find(e => e.id === equipoId);
+  const listHTML = '<ul class="list-group text-start mt-3">' +
+    data.map(inc => `
+      <li class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h6 class="mb-1 fw-bold">${inc.tipo||'N/A'}</h6>
+          <small class="text-muted">${formatearFecha(inc.fecha)}</small>
+        </div>
+        <p class="mb-1 small">${inc.descripcion||''}</p>
+        <small class="text-muted">Técnico: ${inc.responsable||'No especificado'}</small>
+      </li>`).join('') + '</ul>';
+
+  Swal.fire({
+    title: `Historial: ${equipo ? equipo.codigo : ''}`,
+    html: listHTML,
+    icon: 'info',
+    confirmButtonColor: '#0d6efd',
+    confirmButtonText: 'Cerrar',
+  });
+}
+
+// ===================== INCIDENCIAS =====================
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await cargarEquipos();
+
+  const formIncidencia = document.getElementById('formIncidencia');
+  if (formIncidencia) {
+    formIncidencia.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const equipoId    = document.getElementById('equipoAfectado').value;
+      const radioTipo   = document.querySelector('input[name="tipoMantenimiento"]:checked');
+      const tipo        = radioTipo ? radioTipo.value : 'No especificado';
+      const radioEstado = document.querySelector('input[name="estadoIncidencia"]:checked');
+      const nuevoEstado = radioEstado ? radioEstado.value : 'En Mantenimiento';
+      const descripcion = document.getElementById('descProblema').value;
+      const responsable = document.getElementById('responsableMant').value;
+
+      // Guardar incidencia
+      const { error: errInc } = await window.supabaseClient
+        .from('incidencias')
+        .insert({ equipo_id: equipoId, tipo, descripcion, responsable });
+
+      if (errInc) {
+        console.error('Error al guardar incidencia:', errInc);
+        Swal.fire({ title: 'Error', text: 'No se pudo registrar la incidencia.', icon: 'error' });
+        return;
+      }
+
+      // Actualizar estado del equipo
+      const { error: errEq } = await window.supabaseClient
+        .from('equipos')
+        .update({ estado: nuevoEstado })
+        .eq('id', equipoId);
+
+      if (errEq) console.error('Error al actualizar estado equipo:', errEq);
+
+      await cargarEquipos();
+
+      const offcanvasEl = document.getElementById('offcanvasIncidencia');
+      bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl).hide();
+      formIncidencia.reset();
+
+      Swal.fire({ title: '¡Registrado!', text: 'Incidencia registrada correctamente', icon: 'success', confirmButtonColor: '#ffc107' });
     });
-}
-
-function marcarOperativo(codigo) {
-    let equiposDB = JSON.parse(localStorage.getItem('equiposDB')) || [];
-    const index = equiposDB.findIndex(eq => eq.codigo === codigo);
-    
-    if (index !== -1) {
-        equiposDB[index].estado = 'Operativo';
-        localStorage.setItem('equiposDB', JSON.stringify(equiposDB));
-        
-        // Re-renderizar tabla y resumen
-        renderizarTabla();
-        actualizarResumen();
-        
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                title: '¡Actualizado!',
-                text: 'Equipo marcado como operativo',
-                icon: 'success',
-                confirmButtonColor: '#198754' // Verde
-            });
-        } else {
-            alert('Equipo marcado como operativo');
-        }
-    }
-}
-
-function verHistorial(codigo) {
-    let incidenciasDB = JSON.parse(localStorage.getItem('incidenciasDB')) || [];
-    const historial = incidenciasDB.filter(inc => inc.codigo === codigo);
-    
-    if (historial.length > 0) {
-        let listHTML = '<ul class="list-group text-start mt-3">';
-        historial.forEach(inc => {
-            listHTML += `
-                <li class="list-group-item">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h6 class="mb-1 fw-bold">${inc.tipo}</h6>
-                        <small class="text-muted">${inc.fecha}</small>
-                    </div>
-                    <p class="mb-1 small">${inc.descripcion}</p>
-                    <small class="text-muted">Técnico: ${inc.responsable || 'No especificado'}</small>
-                </li>
-            `;
-        });
-        listHTML += '</ul>';
-        
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                title: `Historial: ${codigo}`,
-                html: listHTML,
-                icon: 'info',
-                confirmButtonColor: '#0d6efd',
-                confirmButtonText: 'Cerrar'
-            });
-        }
-    } else {
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                title: 'Sin incidencias',
-                text: 'Este equipo no tiene incidencias registradas',
-                icon: 'info',
-                confirmButtonColor: '#0d6efd',
-                confirmButtonText: 'Entendido'
-            });
-        } else {
-            alert('Este equipo no tiene incidencias registradas');
-        }
-    }
-}
+  }
+});
