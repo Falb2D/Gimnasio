@@ -112,8 +112,14 @@
                                 </h5>
                                 <input type="text" id="buscadorPagos" class="form-control" style="max-width: 250px;" placeholder="Buscar por nombre o DNI...">
                             </div>
-                            <div class="badge bg-success bg-gradient fs-5 py-3 px-4 shadow-sm rounded-pill border border-success border-opacity-25" id="totalRecaudadoBadge">
-                                Total Recaudado Histórico: S/ 0.00
+                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                <div class="badge bg-success bg-gradient fs-5 py-3 px-4 shadow-sm rounded-pill border border-success border-opacity-25" id="totalRecaudadoBadge">
+                                    Total Recaudado Histórico: S/ 0.00
+                                </div>
+                                <button class="btn btn-primary d-flex align-items-center gap-2 shadow-sm"
+                                    data-bs-toggle="modal" data-bs-target="#modalRegistrarPago">
+                                    <i class="fa-solid fa-plus"></i> Registrar Pago
+                                </button>
                             </div>
                         </div>
                         <div class="card-body p-0">
@@ -137,6 +143,78 @@
                     </div>
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- Modal Registrar Pago -->
+    <div class="modal fade" id="modalRegistrarPago" tabindex="-1" aria-labelledby="modalRegistrarPagoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-bottom pb-3">
+                    <h5 class="modal-title fw-bold" id="modalRegistrarPagoLabel">
+                        <i class="fa-solid fa-file-invoice-dollar text-primary me-2"></i> Registrar Pago
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formRegistrarPago" autocomplete="off">
+                        <div class="mb-3">
+                            <label for="pagoSocioId" class="form-label fw-medium text-muted small mb-1">
+                                Socio <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="pagoSocioId" required>
+                                <option value="" disabled selected>Cargando socios...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pagoPlanId" class="form-label fw-medium text-muted small mb-1">
+                                Plan de Membresía <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="pagoPlanId" required>
+                                <option value="" disabled selected>Seleccionar plan...</option>
+                            </select>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="pagoMonto" class="form-label fw-medium text-muted small mb-1">
+                                    Monto (S/) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="pagoMonto"
+                                    step="0.01" min="0" placeholder="0.00" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="pagoFecha" class="form-label fw-medium text-muted small mb-1">
+                                    Fecha <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" class="form-control" id="pagoFecha" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pagoMetodo" class="form-label fw-medium text-muted small mb-1">
+                                Método de Pago <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="pagoMetodo" required>
+                                <option value="" disabled selected>Seleccionar método...</option>
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                                <option value="Yape / Plin">Yape / Plin</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pagoObservaciones" class="form-label fw-medium text-muted small mb-1">
+                                Observaciones <span class="text-muted">(opcional)</span>
+                            </label>
+                            <textarea class="form-control" id="pagoObservaciones" rows="2"
+                                placeholder="Ej: Renovación mensual, descuento aplicado..."></textarea>
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button type="submit" id="btnGuardarPago" class="btn btn-primary py-2 fw-medium">
+                                <i class="fa-solid fa-check me-2"></i> Confirmar Pago
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
