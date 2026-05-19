@@ -1,68 +1,45 @@
 // public/js/shared/utils.js
 
+async function sha256(text) {
+    const data = new TextEncoder().encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Simulación de Autenticación
     verificarSesion();
 
-    // 2. Control de Sidebar
     const sidebarToggle = document.getElementById('sidebarToggle');
-    const sidebarClose = document.getElementById('sidebarClose');
-    const sidebar = document.getElementById('sidebar');
+    const sidebarClose  = document.getElementById('sidebarClose');
+    const sidebar       = document.getElementById('sidebar');
 
-    // Manejar el toggle para mostrar la barra
     if (sidebarToggle && sidebar) {
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('show');
-            // Dependiendo del CSS custom, podría ser 'active' en lugar de 'show'
-            // sidebar.classList.toggle('active');
-        });
+        sidebarToggle.addEventListener('click', () => sidebar.classList.toggle('show'));
     }
-
-    // Manejar el botón para cerrar la barra en vista móvil
     if (sidebarClose && sidebar) {
-        sidebarClose.addEventListener('click', () => {
-            sidebar.classList.remove('show');
-            // sidebar.classList.remove('active');
-        });
+        sidebarClose.addEventListener('click', () => sidebar.classList.remove('show'));
     }
 
-    // 3. Configurar botones de Cerrar Sesión
-    // Encontramos todos los botones de la página. Si incluyen el texto 'Cerrar Sesión' o el ícono FontAwesome, les atamos el evento.
-    const botones = document.querySelectorAll('button');
-    botones.forEach(btn => {
+    document.querySelectorAll('button').forEach(btn => {
         if (btn.textContent.includes('Cerrar Sesión') || btn.querySelector('.fa-right-from-bracket')) {
             btn.addEventListener('click', cerrarSesion);
         }
     });
 });
 
-/**
- * Función para simular verificación de sesión
- * Comprueba si existe el token en el localStorage.
- */
 function verificarSesion() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        console.warn("Advertencia: No hay sesión activa (token no encontrado en localStorage). Se deberá redirigir al login.");
+    const rol = localStorage.getItem('sesionRol');
+    if (!rol) {
+        const path = window.location.pathname;
+        const loginPath = path.includes('/views/') ? '../../login.html' : './login.html';
+        window.location.replace(loginPath);
     }
 }
 
-/**
- * Función para cerrar la sesión
- * Elimina el token y redirige al login de staff.
- */
 function cerrarSesion() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('sesionRol'); // Limpiar la sesión guardada del login mock
-    
-    // Calcular el path correcto hacia login.html (que está en la raíz)
+    ['sesionRol', 'sesionNombre', 'sesionId', 'token'].forEach(k => localStorage.removeItem(k));
     const path = window.location.pathname;
-    
-    if (path.includes('/views/')) {
-        // Si estamos dentro de views/rol/archivo.html, retrocedemos 2 niveles
-        window.location.replace('../../login.html');
-    } else {
-        // Si estamos en la raíz del proyecto
-        window.location.replace('./login.html');
-    }
+    window.location.replace(path.includes('/views/') ? '../../login.html' : './login.html');
 }
