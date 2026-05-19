@@ -1,85 +1,101 @@
-// El Guardia Inverso: Si ya existe una sesión activa, no le mostramos el login
+// public/js/login.js
+// Autenticación contra tabla usuarios en Supabase
+
+// Guardia inverso: si ya hay sesión activa, redirigir al panel
 (function verificarSesionActiva() {
-    const rolActual = localStorage.getItem('sesionRol');
-    if (rolActual) {
-        // Redirige al panel correspondiente para que sea imposible quedarse en la pantalla de Login
-        switch(rolActual) {
-            case 'administrador':
-                window.location.replace('./views/admin/index.html');
-                break;
-            case 'recepcionista':
-                window.location.replace('./views/recepcion/recepcion.html');
-                break;
-            case 'entrenador':
-                window.location.replace('./views/entrenador/entrenador.html');
-                break;
-        }
+    const rol = localStorage.getItem('sesionRol');
+    if (!rol) return;
+    switch (rol) {
+        case 'administrador':  window.location.replace('./views/admin/index.html'); break;
+        case 'recepcionista':  window.location.replace('./views/recepcion/recepcion.html'); break;
+        case 'entrenador':     window.location.replace('./views/entrenador/entrenador.html'); break;
     }
 })();
 
+const RUTAS_POR_ROL = {
+    admin      : { sesion: 'administrador', ruta: './views/admin/index.html' },
+    reception  : { sesion: 'recepcionista', ruta: './views/recepcion/recepcion.html' },
+    instructor : { sesion: 'entrenador',    ruta: './views/entrenador/entrenador.html' },
+    coach      : { sesion: 'entrenador',    ruta: './views/entrenador/entrenador.html' },
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Mock Data de Usuarios
-    const usuariosMock = [
-        { usuario: 'admin', password: '123', rol: 'administrador', ruta: './views/admin/index.html' },
-        { usuario: 'recepcion', password: '123', rol: 'recepcionista', ruta: './views/recepcion/recepcion.html' },
-        { usuario: 'entrenador', password: '123', rol: 'entrenador', ruta: './views/entrenador/entrenador.html' }
-    ];
-
-    // 2. Captura del DOM
-    const formLogin = document.querySelector('form'); // Captura el formulario
-    const inputUsuario = document.getElementById('inputUsuario');
+    const formLogin     = document.getElementById('formLogin');
+    const inputUsuario  = document.getElementById('inputUsuario');
     const inputPassword = document.getElementById('inputPassword');
-    const btnSubmit = document.getElementById('btnSubmit');
+    const btnSubmit     = document.getElementById('btnSubmit');
 
-    if (formLogin) {
-        // 3. Lógica de Autenticación
-        formLogin.addEventListener('submit', (e) => {
-            e.preventDefault(); // Evita recargar la página
+    if (!formLogin) return;
 
-            const usuarioIngresado = inputUsuario.value.trim();
-            const passwordIngresado = inputPassword.value.trim();
+    formLogin.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-            // 4. Buscar coincidencia
-            const usuarioEncontrado = usuariosMock.find(u => 
-                u.usuario === usuarioIngresado && u.password === passwordIngresado
-            );
+        const usuario  = inputUsuario.value.trim();
+        const password = inputPassword.value.trim();
 
-            // 5. Redirección o Error
-            if (usuarioEncontrado) {
-                // Si coinciden: Guardar rol y simular sesión
-                localStorage.setItem('sesionRol', usuarioEncontrado.rol);
-                
-                // UX: Animación de carga en el botón
-                if (btnSubmit) {
-                    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Ingresando...';
-                    btnSubmit.disabled = true;
-                }
+        if (!usuario || !password) return;
 
-                // Redirigir a la ruta definida en el mock data
-                setTimeout(() => {
-                    // Se usa replace() en lugar de href para reemplazar la página actual en el historial. 
-                    // Así, si el usuario presiona "Atrás", no podrá volver al Login, evitando ciclos de navegación rotos.
-                    window.location.replace(usuarioEncontrado.ruta);
-                }, 500);
+        // UX: mostrar spinner
+        if (btnSubmit) {
+            btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Verificando...';
+            btnSubmit.disabled  = true;
+        }
 
-            } else {
-                // Error: Credenciales incorrectas
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Acceso Denegado',
-                        text: 'Usuario o contraseña incorrectos.',
-                        confirmButtonColor: '#0d6efd',
-                        customClass: { popup: 'rounded-4 shadow-lg' }
-                    });
-                } else {
-                    alert('Usuario o contraseña incorrectos');
-                }
-                
-                // Limpiar contraseña y enfocar
-                inputPassword.value = '';
-                inputPassword.focus();
-            }
-        });
+        // Buscar usuario en Supabase por DNI o email
+        const { data, error } = await window.supabaseClient
+            .from('usuarios')
+            .select('id, nombres, apellidos, rol, estado, password')
+            .or(`dni.eq.${usuario},email.eq.${usuario}`)
+            .eq('estado', 'Activo')
+            .single();
+
+        if (error || !data) {
+            mostrarError('Usuario no encontrado o inactivo.');
+            resetBtn();
+            return;
+        }
+
+        if (data.password !== password) {
+            mostrarError('Contraseña incorrecta.');
+            resetBtn();
+            inputPassword.value = '';
+            inputPassword.focus();
+            return;
+        }
+
+        const config = RUTAS_POR_ROL[data.rol];
+        if (!config) {
+            mostrarError('Rol no reconocido. Contacta al administrador.');
+            resetBtn();
+            return;
+        }
+
+        // Guardar sesión en localStorage
+        localStorage.setItem('sesionRol',    config.sesion);
+        localStorage.setItem('sesionNombre', `${data.nombres} ${data.apellidos}`);
+        localStorage.setItem('sesionId',     data.id);
+
+        setTimeout(() => window.location.replace(config.ruta), 500);
+    });
+
+    function resetBtn() {
+        if (btnSubmit) {
+            btnSubmit.innerHTML = 'Iniciar Sesión <i class="fa-solid fa-arrow-right ms-2"></i>';
+            btnSubmit.disabled  = false;
+        }
+    }
+
+    function mostrarError(texto) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Acceso Denegado',
+                text: texto,
+                confirmButtonColor: '#0d6efd',
+                customClass: { popup: 'rounded-4 shadow-lg' }
+            });
+        } else {
+            alert(texto);
+        }
     }
 });
