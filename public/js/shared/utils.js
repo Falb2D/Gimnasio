@@ -106,11 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function verificarSesion() {
     const rol = localStorage.getItem('sesionRol');
-    if (!rol) {
-        const path = window.location.pathname;
-        const loginPath = path.includes('/views/') ? '../../login.html' : './login.html';
-        window.location.replace(loginPath);
-    }
+    if (rol) return;
+    const path = window.location.pathname;
+    if (path.endsWith('login.html') || path === '/' || path === '') return;
+    const loginPath = path.includes('/views/') ? '../../login.html' : './login.html';
+    window.location.replace(loginPath);
 }
 
 function cerrarSesion() {
