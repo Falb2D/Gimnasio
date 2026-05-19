@@ -189,29 +189,6 @@
           <div class="row justify-content-center">
             <div class="col-12 col-lg-8">
               <div id="portalEstadoBanner"></div>
-              <div class="state-buttons d-flex gap-2 flex-wrap mb-4">
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-success"
-            onclick="mostrarEstado('Activo')"
-          >
-            Test Activo
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-warning"
-            onclick="mostrarEstado('Alerta')"
-          >
-            Test Alerta
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-danger"
-            onclick="mostrarEstado('Deudor')"
-          >
-            Test Deudor
-          </button>
-        </div>
 
         <div class="card socio-card status-active" id="socioCard">
           <div class="card-header text-center">
@@ -286,11 +263,13 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- QRCode.js Librería -->
+    <!-- QRCode.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../supabaseConfig.js"></script>
     <script src="../../public/js/shared/utils.js"></script>
     <script src="../../public/js/socio/app.js"></script>
   </body>

@@ -1,122 +1,126 @@
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarEquipos();
-    renderizarEquipos();
-    llenarSelectEquipos();
-    
-    const formReporte = document.getElementById('formReporteIncidencia');
-    if(formReporte) {
-        formReporte.addEventListener('submit', procesarReporte);
-    }
-});
+// public/js/entrenador/equipos.js
 
-// Sincronización y Corrección
-function inicializarEquipos() {
-    if (!localStorage.getItem('equiposDB')) {
-        const equiposPrueba = [
-            { codigo: 'M-001', nombre: 'Cinta de Correr Pro 9000', ubicacion: 'Salón Cardio 1', estado: 'Operativo' },
-            { codigo: 'M-014', nombre: 'Máquina de Remo Concept2', ubicacion: 'Zona Funcional', estado: 'Operativo' },
-            { codigo: 'M-005', nombre: 'Bicicleta Elíptica LifeFitness', ubicacion: 'Salón Cardio 2', estado: 'En Mantenimiento' },
-            { codigo: 'M-022', nombre: 'Prensa de Piernas 45°', ubicacion: 'Zona Pesas Libres', estado: 'Fuera de Servicio' }
-        ];
-        localStorage.setItem('equiposDB', JSON.stringify(equiposPrueba));
-    } else {
-        // Corrección del error tipográfico si la DB ya existía con el 'Â'
-        let equipos = JSON.parse(localStorage.getItem('equiposDB'));
-        let modificado = false;
-        equipos = equipos.map(eq => {
-            if (eq.nombre.includes('Prensa de Piernas') && eq.nombre.includes('Â°')) {
-                eq.nombre = 'Prensa de Piernas 45°';
-                modificado = true;
-            }
-            return eq;
-        });
-        if (modificado) {
-            localStorage.setItem('equiposDB', JSON.stringify(equipos));
-        }
+let equiposCache = [];
+
+async function cargarEquipos() {
+    const tbody = document.getElementById('tbodyEquipos');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4"><span class="spinner-border spinner-border-sm"></span></td></tr>';
+
+    const { data, error } = await window.supabaseClient
+        .from('equipos')
+        .select('*')
+        .order('codigo', { ascending: true });
+
+    if (error) {
+        if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">Error al cargar equipos.</td></tr>';
+        return;
     }
+
+    equiposCache = data || [];
+    renderizarTabla();
+    llenarSelectEquipos();
 }
 
-// Renderizar Tabla
-function renderizarEquipos() {
+function renderizarTabla() {
     const tbody = document.getElementById('tbodyEquipos');
     if (!tbody) return;
-    
-    tbody.innerHTML = ''; // Limpiamos la tabla
-    const equipos = JSON.parse(localStorage.getItem('equiposDB')) || [];
-    
-    equipos.forEach(eq => {
+    tbody.innerHTML = '';
+
+    if (equiposCache.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">No hay equipos registrados.</td></tr>';
+        return;
+    }
+
+    equiposCache.forEach(eq => {
         let badgeHtml = '';
         if (eq.estado === 'Operativo') {
-            badgeHtml = '<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 rounded-pill">Operativo</span>';
+            badgeHtml = '<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 rounded-pill"><i class="fa-solid fa-check me-1"></i>Operativo</span>';
         } else if (eq.estado === 'En Mantenimiento') {
-            badgeHtml = '<span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-1 rounded-pill">En Mantenimiento</span>';
+            badgeHtml = '<span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-1 rounded-pill"><i class="fa-solid fa-screwdriver-wrench me-1"></i>En Mantenimiento</span>';
         } else {
-            badgeHtml = '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-1 rounded-pill">Fuera de Servicio</span>';
+            badgeHtml = '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-1 rounded-pill"><i class="fa-solid fa-ban me-1"></i>Fuera de Servicio</span>';
         }
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td class="ps-4 fw-medium text-gray-800">${eq.codigo}</td>
             <td class="fw-semibold text-gray-800">${eq.nombre}</td>
-            <td class="text-muted"><i class="fa-solid fa-location-dot me-1 text-secondary opacity-50"></i> ${eq.ubicacion}</td>
+            <td class="text-muted"><i class="fa-solid fa-location-dot me-1 text-secondary opacity-50"></i>${eq.ubicacion || 'N/A'}</td>
             <td class="pe-4 text-center">${badgeHtml}</td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-// Llenar el Select Dinámicamente
 function llenarSelectEquipos() {
     const select = document.getElementById('selectEquipo');
     if (!select) return;
-    
     select.innerHTML = '<option value="" selected disabled>Seleccione el equipo...</option>';
-    const equipos = JSON.parse(localStorage.getItem('equiposDB')) || [];
-    
-    equipos.forEach(eq => {
-        const option = document.createElement('option');
-        option.value = eq.codigo;
-        option.textContent = `${eq.codigo} - ${eq.nombre}`;
-        select.appendChild(option);
+    equiposCache.forEach(eq => {
+        const opt = document.createElement('option');
+        opt.value = eq.id;
+        opt.textContent = `${eq.codigo} — ${eq.nombre}`;
+        select.appendChild(opt);
     });
 }
 
-// Procesar Reporte (Submit)
-function procesarReporte(e) {
+async function procesarReporte(e) {
     e.preventDefault();
-    
-    const codigo = document.getElementById('selectEquipo').value;
-    const tipo = document.getElementById('selectTipoFalla').value;
-    const desc = document.getElementById('descFalla').value;
-    
-    let equipos = JSON.parse(localStorage.getItem('equiposDB')) || [];
-    
-    // Buscar el equipo y actualizar su estado
-    const eqIndex = equipos.findIndex(eq => eq.codigo === codigo);
-    if (eqIndex !== -1) {
-        if (tipo === 'Correctivo') {
-            equipos[eqIndex].estado = 'Fuera de Servicio';
-        } else if (tipo === 'Preventivo') {
-            equipos[eqIndex].estado = 'En Mantenimiento';
-        }
-        
-        // Guardar el array actualizado
-        localStorage.setItem('equiposDB', JSON.stringify(equipos));
-        
-        // Cierra el modal de Bootstrap
-        const modalEl = document.getElementById('modalReporte');
-        if (typeof bootstrap !== 'undefined') {
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            if (modal) modal.hide();
-        }
-        
-        // Limpia el formulario
-        e.target.reset();
-        
-        // Muestra el alert de éxito
-        alert('Falla reportada exitosamente');
-        
-        // Vuelve a renderizar la tabla al instante
-        renderizarEquipos();
+
+    const equipoId   = document.getElementById('selectEquipo').value;
+    const tipo       = document.getElementById('selectTipoFalla').value;
+    const descripcion = document.getElementById('descFalla').value.trim();
+    const responsable = localStorage.getItem('sesionNombre') || 'Entrenador';
+
+    if (!equipoId || !tipo || !descripcion) return;
+
+    const nuevoEstado = tipo === 'Correctivo' ? 'Fuera de Servicio' : 'En Mantenimiento';
+
+    const btnEnviar = document.querySelector('button[form="formReporteIncidencia"]');
+    if (btnEnviar) { btnEnviar.disabled = true; btnEnviar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...'; }
+
+    // Registrar incidencia
+    const { error: errInc } = await window.supabaseClient
+        .from('incidencias')
+        .insert({ equipo_id: equipoId, tipo, descripcion, responsable });
+
+    if (errInc) {
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo registrar el reporte.', confirmButtonColor: '#dc3545' });
+        if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i>Enviar Reporte'; }
+        return;
     }
+
+    // Actualizar estado del equipo
+    await window.supabaseClient
+        .from('equipos')
+        .update({ estado: nuevoEstado })
+        .eq('id', equipoId);
+
+    // Cerrar modal
+    const modalEl = document.getElementById('modalReporte');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+    }
+
+    e.target.reset();
+    if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.innerHTML = '<i class="fa-solid fa-paper-plane me-2"></i>Enviar Reporte'; }
+
+    await cargarEquipos();
+
+    Swal.fire({
+        icon: 'success',
+        title: '¡Reporte Enviado!',
+        text: 'La falla ha sido registrada y el estado del equipo actualizado.',
+        confirmButtonColor: '#198754',
+        timer: 2500,
+        showConfirmButton: false
+    });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    cargarEquipos();
+
+    const formReporte = document.getElementById('formReporteIncidencia');
+    if (formReporte) formReporte.addEventListener('submit', procesarReporte);
+});

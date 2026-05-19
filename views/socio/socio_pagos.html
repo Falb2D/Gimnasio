@@ -171,21 +171,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-      function verComprobante(numero) {
-        Swal.fire({
-          title: "Comprobante",
-          html: `Descargando comprobante electrónico <b>${numero}</b>...`,
-          icon: "info",
-          timer: 1500,
-          showConfirmButton: false,
-          timerProgressBar: true,
-          customClass: {
-            popup: "rounded-4 shadow-lg",
-          },
-        });
-      }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../supabaseConfig.js"></script>
     <script src="../../public/js/shared/utils.js"></script>
     <script src="../../public/js/socio/app.js"></script>
   </body>
