@@ -319,6 +319,9 @@
                                   Nombres Completos
                                 </th>
                                 <th class="py-3 text-muted fw-semibold">
+                                  Usuario
+                                </th>
+                                <th class="py-3 text-muted fw-semibold">
                                   Email
                                 </th>
                                 <th
@@ -542,6 +545,21 @@
                 </div>
                 <div class="col-md-12">
                   <label
+                    for="usernameStaff"
+                    class="form-label fw-medium text-muted small mb-1"
+                    >Nombre de Usuario <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="usernameStaff"
+                    placeholder="Ej: jperez, recepcion2"
+                    autocomplete="off"
+                    required
+                  />
+                </div>
+                <div class="col-md-12">
+                  <label
                     for="passStaff"
                     class="form-label fw-medium text-muted small mb-1"
                     >Contraseña Provisional
@@ -684,6 +702,20 @@
                 </div>
                 <div class="col-md-12">
                   <label
+                    for="editarUsernameStaff"
+                    class="form-label fw-medium text-muted small mb-1"
+                    >Nombre de Usuario <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="editarUsernameStaff"
+                    autocomplete="off"
+                    required
+                  />
+                </div>
+                <div class="col-md-12">
+                  <label
                     for="editarEstadoStaff"
                     class="form-label fw-medium text-muted small mb-1"
                     >Estado del Usuario
@@ -693,6 +725,19 @@
                     <option value="Activo">Activo</option>
                     <option value="Inactivo">Inactivo</option>
                   </select>
+                </div>
+                <div class="col-md-12">
+                  <label
+                    for="editarPassStaff"
+                    class="form-label fw-medium text-muted small mb-1"
+                    >Nueva Contraseña <span class="text-muted">(dejar en blanco para no cambiar)</span></label
+                  >
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="editarPassStaff"
+                    placeholder="Nueva contraseña (opcional)"
+                  />
                 </div>
               </div>
               <div class="d-grid gap-2 mt-4">
