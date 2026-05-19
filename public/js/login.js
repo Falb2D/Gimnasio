@@ -1,14 +1,12 @@
 // public/js/login.js
-// Autenticación contra tabla usuarios en Supabase
 
-// Guardia inverso: si ya hay sesión activa, redirigir al panel
 (function verificarSesionActiva() {
     const rol = localStorage.getItem('sesionRol');
     if (!rol) return;
     switch (rol) {
-        case 'administrador':  window.location.replace('./views/admin/index.html'); break;
-        case 'recepcionista':  window.location.replace('./views/recepcion/recepcion.html'); break;
-        case 'entrenador':     window.location.replace('./views/entrenador/entrenador.html'); break;
+        case 'administrador': window.location.replace('./views/admin/index.html'); break;
+        case 'recepcionista': window.location.replace('./views/recepcion/recepcion.html'); break;
+        case 'entrenador':    window.location.replace('./views/entrenador/entrenador.html'); break;
     }
 })();
 
@@ -18,6 +16,14 @@ const RUTAS_POR_ROL = {
     instructor : { sesion: 'entrenador',    ruta: './views/entrenador/entrenador.html' },
     coach      : { sesion: 'entrenador',    ruta: './views/entrenador/entrenador.html' },
 };
+
+async function sha256(text) {
+    const data = new TextEncoder().encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const formLogin     = document.getElementById('formLogin');
@@ -31,21 +37,21 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         const usuario  = inputUsuario.value.trim();
-        const password = inputPassword.value.trim();
+        const password = inputPassword.value;
 
         if (!usuario || !password) return;
 
-        // UX: mostrar spinner
         if (btnSubmit) {
             btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Verificando...';
             btnSubmit.disabled  = true;
         }
 
-        // Buscar usuario en Supabase por DNI o email
+        const passwordHash = await sha256(password);
+
         const { data, error } = await window.supabaseClient
             .from('usuarios')
             .select('id, nombres, apellidos, rol, estado, password')
-            .or(`dni.eq.${usuario},email.eq.${usuario}`)
+            .eq('username', usuario)
             .eq('estado', 'Activo')
             .single();
 
@@ -55,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (data.password !== password) {
+        if (data.password !== passwordHash) {
             mostrarError('Contraseña incorrecta.');
             resetBtn();
             inputPassword.value = '';
@@ -70,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Guardar sesión en localStorage
         localStorage.setItem('sesionRol',    config.sesion);
         localStorage.setItem('sesionNombre', `${data.nombres} ${data.apellidos}`);
         localStorage.setItem('sesionId',     data.id);
