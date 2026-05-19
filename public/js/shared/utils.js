@@ -8,8 +8,83 @@ async function sha256(text) {
         .join('');
 }
 
+// ===================== SESIÓN =====================
+
+const SESSION_TIMEOUT_MS  = 30 * 60 * 1000; // 30 minutos de inactividad
+const SESSION_WARNING_MS  = 29 * 60 * 1000; // aviso al minuto 29
+
+let _timeoutHandle  = null;
+let _warningHandle  = null;
+let _warningSwal    = null;
+
+function _resetSessionTimer() {
+    clearTimeout(_timeoutHandle);
+    clearTimeout(_warningHandle);
+
+    // Si hay una alerta de advertencia abierta, cerrarla
+    if (_warningSwal) { _warningSwal.close(); _warningSwal = null; }
+
+    _warningHandle = setTimeout(_mostrarAvisoExpiracion, SESSION_WARNING_MS);
+    _timeoutHandle = setTimeout(_expirarSesion, SESSION_TIMEOUT_MS);
+}
+
+function _mostrarAvisoExpiracion() {
+    if (typeof Swal === 'undefined') return;
+    let segundos = 60;
+    _warningSwal = Swal.fire({
+        icon: 'warning',
+        title: 'Sesión por expirar',
+        html: `Tu sesión cerrará por inactividad en <strong id="cuentaRegresiva">60</strong> segundos.`,
+        confirmButtonText: 'Seguir conectado',
+        confirmButtonColor: '#0d6efd',
+        allowOutsideClick: false,
+        didOpen: () => {
+            const intervalo = setInterval(() => {
+                segundos--;
+                const el = document.getElementById('cuentaRegresiva');
+                if (el) el.textContent = segundos;
+                if (segundos <= 0) clearInterval(intervalo);
+            }, 1000);
+        }
+    });
+    _warningSwal.then(result => {
+        if (result.isConfirmed) {
+            _resetSessionTimer();
+        }
+    });
+}
+
+function _expirarSesion() {
+    if (_warningSwal) { _warningSwal.close(); _warningSwal = null; }
+    ['sesionRol', 'sesionNombre', 'sesionId', 'token'].forEach(k => localStorage.removeItem(k));
+    const path = window.location.pathname;
+    const loginPath = path.includes('/views/') ? '../../login.html' : './login.html';
+
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'info',
+            title: 'Sesión expirada',
+            text: 'Cerraste sesión por inactividad.',
+            confirmButtonColor: '#0d6efd',
+            allowOutsideClick: false,
+        }).then(() => window.location.replace(loginPath));
+    } else {
+        window.location.replace(loginPath);
+    }
+}
+
+function _iniciarMonitorInactividad() {
+    ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(ev => {
+        document.addEventListener(ev, _resetSessionTimer, { passive: true });
+    });
+    _resetSessionTimer();
+}
+
+// ===================== INIT =====================
+
 document.addEventListener('DOMContentLoaded', () => {
     verificarSesion();
+    _iniciarMonitorInactividad();
 
     const sidebarToggle = document.getElementById('sidebarToggle');
     const sidebarClose  = document.getElementById('sidebarClose');
@@ -39,6 +114,8 @@ function verificarSesion() {
 }
 
 function cerrarSesion() {
+    clearTimeout(_timeoutHandle);
+    clearTimeout(_warningHandle);
     ['sesionRol', 'sesionNombre', 'sesionId', 'token'].forEach(k => localStorage.removeItem(k));
     const path = window.location.pathname;
     window.location.replace(path.includes('/views/') ? '../../login.html' : './login.html');
