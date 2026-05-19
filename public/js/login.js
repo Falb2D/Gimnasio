@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!usuario || !password) return;
 
         if (btnSubmit) {
-            btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Verificando...';
+            btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm" style="width:1rem;height:1rem;border-width:2px;"></span> Verificando...';
             btnSubmit.disabled  = true;
         }
 
