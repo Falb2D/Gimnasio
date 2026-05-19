@@ -1,97 +1,96 @@
 // public/js/admin/pagos.js
+// Backend: Supabase
 
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Helper: Mapeo de íconos según método de pago
-    const getIconoMetodo = (metodo) => {
-        if (!metodo) return '<i class="fa-solid fa-credit-card text-info me-1"></i>';
-        switch(metodo.toLowerCase()) {
-            case 'efectivo': return '<i class="fa-solid fa-money-bill-wave text-success me-1"></i>';
-            case 'transferencia': return '<i class="fa-solid fa-building-columns text-secondary me-1"></i>';
-            case 'transferencia bancaria': return '<i class="fa-solid fa-building-columns text-secondary me-1"></i>';
-            case 'yape / plin': return '<i class="fa-solid fa-mobile-screen text-primary me-1"></i>';
-            default: return '<i class="fa-solid fa-credit-card text-info me-1"></i>';
-        }
-    };
+let pagosCache = [];
 
-    // Inyección de Datos de Prueba para la búsqueda en vivo
-    let pagosDB = JSON.parse(localStorage.getItem('pagosDB')) || [];
-    if (pagosDB.length === 0 || !pagosDB[0].dni) {
-        pagosDB = [
-            { fecha: '15/05/2026', socio: 'María Rodríguez Solano', dni: '76543210', plan: 'Trimestral VIP', monto: '300.00', metodoPago: 'Transferencia Bancaria', estado: 'Vigente' },
-            { fecha: '14/05/2026', socio: 'Juan Gonzáles Pérez', dni: '43210987', plan: 'Mensual Ilimitado', monto: '120.00', metodoPago: 'Yape / Plin', estado: 'Vigente' },
-            { fecha: '13/05/2026', socio: 'Pedro Sánchez', dni: '12345678', plan: 'Anual Full', monto: '1000.00', metodoPago: 'Efectivo', estado: 'Vigente' },
-            { fecha: '12/05/2026', socio: 'Lucía Fernández', dni: '87654321', plan: 'Mensual Básico', monto: '80.00', metodoPago: 'Transferencia Bancaria', estado: 'Vigente' },
-            { fecha: '10/05/2026', socio: 'Carlos López Vargas', dni: '11223344', plan: 'Semestral Básico', monto: '450.00', metodoPago: 'Tarjeta de Crédito', estado: 'Vigente' }
-        ];
-        localStorage.setItem('pagosDB', JSON.stringify(pagosDB));
-    }
+const getIconoMetodo = (metodo) => {
+  if (!metodo) return '<i class="fa-solid fa-credit-card text-info me-1"></i>';
+  switch (metodo.toLowerCase()) {
+    case 'efectivo':             return '<i class="fa-solid fa-money-bill-wave text-success me-1"></i>';
+    case 'transferencia bancaria': return '<i class="fa-solid fa-building-columns text-secondary me-1"></i>';
+    case 'yape / plin':          return '<i class="fa-solid fa-mobile-screen text-primary me-1"></i>';
+    default:                     return '<i class="fa-solid fa-credit-card text-info me-1"></i>';
+  }
+};
 
-    const renderizarHistorialAdmin = (datos = null) => {
-        const tablaPagos = document.getElementById('tablaPagos');
-        const totalRecaudadoBadge = document.getElementById('totalRecaudadoBadge');
-        
-        if (!tablaPagos) return;
-        
-        // 1. Leer pagos a renderizar (Si llegan filtrados los usa, si no lee de localStorage)
-        const historialPagos = datos !== null ? datos : (JSON.parse(localStorage.getItem('pagosDB')) || []);
-        
-        // 2. Sumar todos los montos de lo que se va a mostrar
-        let total = 0;
-        historialPagos.forEach(pago => {
-            const monto = parseFloat(pago.monto) || 0;
-            total += monto;
-        });
-        
-        // Actualizar el indicador de Total Recaudado dinámicamente
-        if (totalRecaudadoBadge) {
-            totalRecaudadoBadge.innerHTML = `Total Recaudado Histórico: S/ ${total.toFixed(2)}`;
-        }
+const formatearFecha = (fechaISO) => {
+  if (!fechaISO) return 'N/A';
+  const d = new Date(fechaISO);
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+};
 
-        // Limpiar la tabla
-        tablaPagos.innerHTML = '';
+const renderizarPagos = (pagos) => {
+  const tbody   = document.getElementById('tablaPagos');
+  const badge   = document.getElementById('totalRecaudadoBadge');
+  if (!tbody) return;
 
-        if (historialPagos.length === 0) {
-            tablaPagos.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No se encontraron pagos con ese término.</td></tr>';
-            return;
-        }
+  const total = pagos.reduce((acc, p) => acc + parseFloat(p.monto || 0), 0);
+  if (badge) badge.textContent = `Total Recaudado Histórico: S/ ${total.toFixed(2)}`;
 
-        // 3. Recorrer el array y pintar las filas (Solo lectura)
-        historialPagos.forEach((pago) => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="ps-4 text-gray-800">${pago.fecha || 'N/A'}</td>
-                <td>
-                    <div>
-                        <span class="fw-bold">${pago.socio || 'N/A'}</span><br>
-                        <small class="text-muted">DNI: ${pago.dni || 'N/A'}</small>
-                    </div>
-                </td>
-                <td class="text-muted">${pago.plan || 'N/A'}</td>
-                <td class="fw-bold text-success">S/ ${parseFloat(pago.monto || 0).toFixed(2)}</td>
-                <td class="pe-4"><span class="badge bg-light text-dark border">${getIconoMetodo(pago.metodoPago)} ${pago.metodoPago || 'N/A'}</span></td>
-            `;
-            tablaPagos.appendChild(tr);
-        });
-    };
+  tbody.innerHTML = '';
+  if (!pagos || pagos.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No se encontraron pagos.</td></tr>';
+    return;
+  }
 
-    // Ejecutar automáticamente al cargar el DOM
-    renderizarHistorialAdmin();
+  pagos.forEach(pago => {
+    const nombreSocio = pago.socios
+      ? `${pago.socios.nombres} ${pago.socios.apellidos}`
+      : 'N/A';
+    const dniSocio  = pago.socios ? pago.socios.dni : 'N/A';
+    const planNombre = pago.planes ? pago.planes.nombre : 'N/A';
 
-    // 4. Lógica de Búsqueda
-    const buscadorPagos = document.getElementById('buscadorPagos');
-    if (buscadorPagos) {
-        buscadorPagos.addEventListener('input', (e) => {
-            const textoBuscado = e.target.value.toLowerCase();
-            const todosLosPagos = JSON.parse(localStorage.getItem('pagosDB')) || [];
-            
-            const pagosFiltrados = todosLosPagos.filter(pago => {
-                const nombreSocio = (pago.socio || '').toLowerCase();
-                const dniSocio = (pago.dni || '').toLowerCase();
-                return nombreSocio.includes(textoBuscado) || dniSocio.includes(textoBuscado);
-            });
-            
-            renderizarHistorialAdmin(pagosFiltrados);
-        });
-    }
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="ps-4 text-gray-800">${formatearFecha(pago.fecha)}</td>
+      <td>
+        <span class="fw-bold">${nombreSocio}</span><br>
+        <small class="text-muted">DNI: ${dniSocio}</small>
+      </td>
+      <td class="text-muted">${planNombre}</td>
+      <td class="fw-bold text-success">S/ ${parseFloat(pago.monto || 0).toFixed(2)}</td>
+      <td class="pe-4">
+        <span class="badge bg-light text-dark border">
+          ${getIconoMetodo(pago.metodo_pago)} ${pago.metodo_pago || 'N/A'}
+        </span>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+};
+
+async function cargarPagos() {
+  const tbody = document.getElementById('tablaPagos');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4"><span class="spinner-border spinner-border-sm"></span></td></tr>';
+
+  const { data, error } = await window.supabaseClient
+    .from('pagos')
+    .select('*, socios(nombres, apellidos, dni), planes(nombre)')
+    .order('fecha', { ascending: false });
+
+  if (error) {
+    console.error('Error al cargar pagos:', error);
+    if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">Error al cargar pagos.</td></tr>';
+    return;
+  }
+
+  pagosCache = data || [];
+  renderizarPagos(pagosCache);
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await cargarPagos();
+
+  const buscador = document.getElementById('buscadorPagos');
+  if (buscador) {
+    buscador.addEventListener('input', (e) => {
+      const termino = e.target.value.toLowerCase().trim();
+      const filtrados = pagosCache.filter(p => {
+        const nombre = p.socios ? `${p.socios.nombres} ${p.socios.apellidos}`.toLowerCase() : '';
+        const dni    = p.socios ? p.socios.dni : '';
+        return nombre.includes(termino) || dni.includes(termino);
+      });
+      renderizarPagos(filtrados);
+    });
+  }
 });
