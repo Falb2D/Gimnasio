@@ -78,11 +78,12 @@ function renderizarTabla(socios) {
         if (estado === 'Activo')  { badgeClase = 'bg-success bg-opacity-10 text-success'; }
         if (estado === 'Moroso')  { badgeClase = 'bg-danger bg-opacity-10 text-danger'; vencClase = 'text-danger fw-medium'; }
 
-        const btnCobrar = estado === 'Activo'
-            ? `<button class="btn btn-sm btn-light text-muted border rounded me-1" disabled title="Socio ya activo"><i class="fa-solid fa-money-bill-wave"></i></button>`
-            : `<button class="btn btn-sm btn-light text-success border rounded me-1 btn-cobrar"
-                data-id="${socio.id}" data-nombre="${nombre} ${apellido}" data-dni="${socio.dni}"
-                title="Cobrar Membresía"><i class="fa-solid fa-money-bill-wave"></i></button>`;
+        const esActivo   = estado === 'Activo';
+        const btnCobrar  = `<button class="btn btn-sm ${esActivo ? 'btn-light text-primary' : 'btn-light text-success'} border rounded me-1 btn-cobrar"
+            data-id="${socio.id}" data-nombre="${nombre} ${apellido}" data-dni="${socio.dni}"
+            title="${esActivo ? 'Renovar Membresía' : 'Cobrar Membresía'}">
+            <i class="fa-solid ${esActivo ? 'fa-rotate-right' : 'fa-money-bill-wave'}"></i>
+        </button>`;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -160,9 +161,10 @@ function setupFormNuevoSocio() {
             return;
         }
 
+        const passwordHash = await sha256(dni);
         const { error } = await window.supabaseClient
             .from('socios')
-            .insert({ nombres, apellidos, dni, telefono, email, estado: 'Inactivo' });
+            .insert({ nombres, apellidos, dni, telefono, email, estado: 'Inactivo', password: passwordHash });
 
         if (error) {
             const msg = error.code === '23505' ? 'El DNI ya está registrado.' : 'No se pudo registrar el socio.';
@@ -260,12 +262,19 @@ function setupOffcanvasCobro() {
             return;
         }
 
-        const duracion     = parseInt(planEl.options[planEl.selectedIndex].dataset.duracion || '30', 10);
-        const hoy          = new Date();
-        const fechaVenc    = new Date(hoy);
+        const duracion = parseInt(planEl.options[planEl.selectedIndex].dataset.duracion || '30', 10);
+        const hoy      = new Date();
+        const hoyStr   = hoy.toISOString().split('T')[0];
+
+        // Si el socio tiene una membresía vigente, extender desde su vencimiento actual
+        const socio     = sociosCache.find(s => s.id === socioId);
+        const usarBase  = socio?.estado === 'Activo' && socio?.vencimiento && socio.vencimiento >= hoyStr
+            ? new Date(socio.vencimiento + 'T12:00:00')
+            : hoy;
+        const fechaVenc      = new Date(usarBase);
         fechaVenc.setDate(fechaVenc.getDate() + duracion);
         const vencimientoStr = fechaVenc.toISOString().split('T')[0];
-        const fechaHoy       = hoy.toISOString().split('T')[0];
+        const fechaHoy       = hoyStr;
 
         const { error: errPago } = await window.supabaseClient
             .from('pagos')

@@ -54,11 +54,20 @@ function _mostrarAvisoExpiracion() {
     });
 }
 
+function _getLoginPath() {
+    const rol  = localStorage.getItem('sesionRol');
+    const path = window.location.pathname;
+    const esSocio = rol === 'socio' || path.includes('/socio/');
+    if (esSocio) {
+        return path.includes('/views/') ? '../../login_socio.html' : './login_socio.html';
+    }
+    return path.includes('/views/') ? '../../login.html' : './login.html';
+}
+
 function _expirarSesion() {
     if (_warningSwal) { _warningSwal.close(); _warningSwal = null; }
+    const loginPath = _getLoginPath();
     ['sesionRol', 'sesionNombre', 'sesionId', 'token'].forEach(k => localStorage.removeItem(k));
-    const path = window.location.pathname;
-    const loginPath = path.includes('/views/') ? '../../login.html' : './login.html';
 
     if (typeof Swal !== 'undefined') {
         Swal.fire({
@@ -108,15 +117,14 @@ function verificarSesion() {
     const rol = localStorage.getItem('sesionRol');
     if (rol) return;
     const path = window.location.pathname;
-    if (path.endsWith('login.html') || path === '/' || path === '') return;
-    const loginPath = path.includes('/views/') ? '../../login.html' : './login.html';
-    window.location.replace(loginPath);
+    if (path.endsWith('login.html') || path.endsWith('login_socio.html') || path === '/' || path === '') return;
+    window.location.replace(_getLoginPath());
 }
 
 function cerrarSesion() {
     clearTimeout(_timeoutHandle);
     clearTimeout(_warningHandle);
+    const loginPath = _getLoginPath();
     ['sesionRol', 'sesionNombre', 'sesionId', 'token'].forEach(k => localStorage.removeItem(k));
-    const path = window.location.pathname;
-    window.location.replace(path.includes('/views/') ? '../../login.html' : './login.html');
+    window.location.replace(loginPath);
 }

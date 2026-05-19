@@ -118,30 +118,91 @@ window.abrirListaAsistentes = async function(idClase) {
     }
     if (ocHora) ocHora.textContent = horaInicio;
 
-    if (lista) {
-        if (clase.estado === 'Cancelada') {
-            lista.innerHTML = '<div class="p-4 text-center text-danger"><h5 class="fw-bold">CLASE CANCELADA</h5><p class="small text-muted mb-0">Esta clase fue cancelada.</p></div>';
-        } else {
-            const inscritos = clase.inscritos || [];
-            if (!inscritos.length) {
-                lista.innerHTML = '<div class="p-4 text-center text-muted"><p class="mb-0">No hay alumnos inscritos.</p></div>';
-            } else {
-                lista.innerHTML = inscritos.map((a, i) => {
-                    const nombre = a.nombre || `${a.nombres || ''} ${a.apellidos || ''}`.trim();
-                    return `
-                        <div class="list-group-item py-3">
-                            <div class="d-flex align-items-center">
-                                <div class="bg-light text-secondary rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold border" style="width:40px;height:40px;">${i + 1}</div>
-                                <div>
-                                    <h6 class="mb-0 fw-semibold text-gray-800">${nombre}</h6>
-                                    <small class="text-muted">ID: ${a.socio_id || a.id}</small>
-                                </div>
-                            </div>
-                        </div>`;
-                }).join('');
-            }
-        }
+    if (!lista) {
+        bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasAsistentes')).show();
+        return;
     }
+
+    if (clase.estado === 'Cancelada') {
+        lista.innerHTML = '<div class="p-4 text-center text-danger"><h5 class="fw-bold">CLASE CANCELADA</h5><p class="small text-muted mb-0">Esta clase fue cancelada.</p></div>';
+        bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasAsistentes')).show();
+        return;
+    }
+
+    const inscritos = clase.inscritos || [];
+    if (!inscritos.length) {
+        lista.innerHTML = '<div class="p-4 text-center text-muted"><p class="mb-0">No hay alumnos inscritos.</p></div>';
+        bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasAsistentes')).show();
+        return;
+    }
+
+    // Cargar asistencias registradas hoy para esta clase
+    const hoy = new Date().toISOString().split('T')[0];
+    const { data: asistenciasHoy } = await window.supabaseClient
+        .from('asistencias')
+        .select('socio_id, presente')
+        .eq('clase_id', idClase)
+        .eq('fecha', hoy);
+
+    const asistenciaMap = {};
+    (asistenciasHoy || []).forEach(a => { asistenciaMap[a.socio_id] = a.presente; });
+
+    lista.innerHTML = '';
+    inscritos.forEach((a, i) => {
+        const nombre     = a.nombre || `${a.nombres || ''} ${a.apellidos || ''}`.trim();
+        const socioId    = a.socio_id || a.id;
+        const estaPresente = asistenciaMap[socioId] === true;
+        const checkId    = `asist-${socioId}`;
+
+        const item = document.createElement('div');
+        item.className = 'list-group-item py-3';
+        item.innerHTML = `
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <div class="bg-light text-secondary rounded-circle d-flex justify-content-center align-items-center me-3 fw-bold border" style="width:40px;height:40px;">${i + 1}</div>
+                    <div>
+                        <h6 class="mb-0 fw-semibold text-gray-800">${nombre}</h6>
+                        <small class="text-muted">Socio ID: ${socioId.slice(0, 8)}...</small>
+                    </div>
+                </div>
+                <div class="form-check form-switch mb-0">
+                    <input class="form-check-input asist-check" type="checkbox" role="switch"
+                        id="${checkId}" ${estaPresente ? 'checked' : ''}
+                        data-socio-id="${socioId}" data-clase-id="${idClase}">
+                    <label class="form-check-label small fw-semibold ${estaPresente ? 'text-success' : 'text-muted'}" for="${checkId}">
+                        ${estaPresente ? 'Presente' : 'Ausente'}
+                    </label>
+                </div>
+            </div>`;
+        lista.appendChild(item);
+    });
+
+    // Eventos de los switches de asistencia
+    lista.querySelectorAll('.asist-check').forEach(chk => {
+        chk.addEventListener('change', async function () {
+            const socioId = this.dataset.socioId;
+            const claseId = this.dataset.claseId;
+            const presente = this.checked;
+            const label = this.nextElementSibling;
+
+            this.disabled = true;
+            const { error } = await window.supabaseClient
+                .from('asistencias')
+                .upsert(
+                    { clase_id: claseId, socio_id: socioId, fecha: hoy, presente },
+                    { onConflict: 'clase_id,socio_id,fecha' }
+                );
+
+            if (error) {
+                console.error('Error registrando asistencia:', error);
+                this.checked = !presente; // revertir
+            } else if (label) {
+                label.textContent = presente ? 'Presente' : 'Ausente';
+                label.className   = `form-check-label small fw-semibold ${presente ? 'text-success' : 'text-muted'}`;
+            }
+            this.disabled = false;
+        });
+    });
 
     bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasAsistentes')).show();
 };

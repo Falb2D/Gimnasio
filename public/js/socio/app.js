@@ -188,81 +188,122 @@ async function renderizarClases(socio, estadoUI) {
         return;
     }
 
-    const hoy = new Date().toISOString().split('T')[0];
-    const { data: clases, error } = await window.supabaseClient
-        .from('clases')
-        .select('*, inscripciones(socio_id)')
-        .neq('estado', 'Cancelada')
-        .order('fecha_hora', { ascending: true });
+    // Calcular fechas para el filtro de 3 días
+    const dias   = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+    const meses  = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const fechaDias = [0, 1, 2].map(offset => {
+        const d = new Date(); d.setDate(d.getDate() + offset); return d;
+    });
+    const fechaStrs = fechaDias.map(d => d.toISOString().split('T')[0]);
 
-    if (error || !clases) {
-        contenedor.innerHTML = '<div class="col-12 text-center text-danger py-4">Error al cargar clases.</div>';
-        return;
-    }
+    // Actualizar labels dinámicos del filtro
+    const labelHoy     = document.querySelector('label[for="btnHoy"]');
+    const labelManana  = document.querySelector('label[for="btnManana"]');
+    const labelTercero = document.querySelector('label[for="btnMiercoles"]');
+    if (labelHoy)     labelHoy.textContent     = 'Hoy';
+    if (labelManana)  labelManana.textContent   = 'Mañana';
+    if (labelTercero) labelTercero.textContent  = `${dias[fechaDias[2].getDay()]} ${fechaDias[2].getDate()} ${meses[fechaDias[2].getMonth()]}`;
 
-    contenedor.innerHTML = '';
+    const obtenerFechaFiltro = () => {
+        if (document.getElementById('btnManana')?.checked)   return fechaStrs[1];
+        if (document.getElementById('btnMiercoles')?.checked) return fechaStrs[2];
+        return fechaStrs[0]; // Hoy por defecto
+    };
 
-    if (clases.length === 0) {
-        contenedor.innerHTML = '<div class="col-12 text-center text-muted py-5">No hay clases disponibles.</div>';
-        return;
-    }
+    const renderClasesFiltradas = async (fechaFiltro) => {
+        contenedor.innerHTML = '<div class="col-12 text-center py-5"><span class="spinner-border text-primary"></span></div>';
 
-    clases.forEach(clase => {
-        const inscripciones = clase.inscripciones || [];
-        const capacidad = clase.capacidad_max || clase.capacidad || 0;
-        const inscritos = inscripciones.length;
-        const lugares = capacidad - inscritos;
-        const yaInscrito = inscripciones.some(i => i.socio_id === socio.id);
-        const llena = lugares <= 0 && !yaInscrito;
+        const desde = `${fechaFiltro}T00:00:00`;
+        const hasta = `${fechaFiltro}T23:59:59`;
 
-        const horario = clase.fecha_hora
-            ? new Date(clase.fecha_hora).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })
-            : (clase.horario || '—');
+        const { data: clases, error } = await window.supabaseClient
+            .from('clases')
+            .select('*, inscripciones(socio_id)')
+            .neq('estado', 'Cancelada')
+            .gte('fecha_hora', desde)
+            .lte('fecha_hora', hasta)
+            .order('fecha_hora', { ascending: true });
 
-        let botonHtml = '';
-        if (yaInscrito) {
-            botonHtml = `<button class="btn btn-outline-danger w-100 fw-bold py-2"
-                onclick="cancelarReserva('${clase.id}','${clase.nombre}')">
-                <i class="fa-solid fa-xmark me-2"></i>Cancelar Reserva</button>`;
-        } else if (llena) {
-            botonHtml = `<button class="btn btn-secondary w-100 fw-bold py-2" disabled>
-                <i class="fa-solid fa-ban me-2"></i>Clase Llena</button>`;
-        } else {
-            botonHtml = `<button class="btn btn-primary w-100 fw-bold py-2"
-                onclick="reservarLugar('${clase.id}','${clase.nombre}')">
-                <i class="fa-solid fa-calendar-plus me-2"></i>Reservar mi lugar</button>`;
+        if (error) {
+            contenedor.innerHTML = '<div class="col-12 text-center text-danger py-4">Error al cargar clases.</div>';
+            return;
         }
 
-        const placesBg = llena ? 'bg-danger bg-opacity-10 border-danger' : 'bg-light border-secondary border-opacity-10';
-        const placesText = llena ? 'text-danger' : 'text-gray-800';
+        contenedor.innerHTML = '';
+        if (!clases || clases.length === 0) {
+            contenedor.innerHTML = '<div class="col-12 text-center text-muted py-5">No hay clases disponibles para este día.</div>';
+            return;
+        }
 
-        const col = document.createElement('div');
-        col.className = 'col-12 col-md-6 col-lg-4 mb-4';
-        col.innerHTML = `
-            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 mb-2 rounded-pill px-3 py-1">FITFAB Studio</span>
-                            <h5 class="fw-bold mb-1">${clase.nombre}</h5>
-                            <p class="text-muted small mb-0"><i class="fa-solid fa-user-ninja me-1 text-secondary"></i>${clase.instructor_nombre || clase.coach || 'Entrenador'}</p>
-                        </div>
-                        <div class="bg-light rounded p-2 text-center border shadow-sm">
-                            <span class="d-block fw-bold text-primary fs-5 lh-1">${horario}</span>
-                            <span class="d-block text-muted mt-1" style="font-size:0.65rem;font-weight:700">HRS</span>
-                        </div>
-                    </div>
-                    <div class="${placesBg} rounded-3 p-3 mb-4 border">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold ${placesText} small"><i class="fa-solid fa-users me-2"></i>Lugares disponibles</span>
-                            <span class="fw-bold px-2 py-1 rounded ${llena ? 'bg-danger bg-opacity-10 text-danger' : 'bg-success bg-opacity-10 text-success'}">${lugares} / ${capacidad}</span>
-                        </div>
-                    </div>
-                    ${botonHtml}
-                </div>
-            </div>`;
-        contenedor.appendChild(col);
+        clases.forEach(clase => {
+            buildClaseCard(clase, socio, contenedor);
+        });
+    };
+
+    // Conectar botones del filtro
+    ['btnHoy', 'btnManana', 'btnMiercoles'].forEach((id, i) => {
+        const radio = document.getElementById(id);
+        if (radio) radio.addEventListener('change', () => { if (radio.checked) renderClasesFiltradas(fechaStrs[i]); });
     });
+
+    await renderClasesFiltradas(obtenerFechaFiltro());
+}
+
+function buildClaseCard(clase, socio, contenedor) {
+    const inscripciones = clase.inscripciones || [];
+    const capacidad  = clase.capacidad_max || clase.capacidad || 0;
+    const inscritos  = inscripciones.length;
+    const lugares    = capacidad - inscritos;
+    const yaInscrito = inscripciones.some(i => i.socio_id === socio.id);
+    const llena      = lugares <= 0 && !yaInscrito;
+
+    const horario = clase.fecha_hora
+        ? new Date(clase.fecha_hora).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })
+        : (clase.horario || '—');
+
+    let botonHtml = '';
+    if (yaInscrito) {
+        botonHtml = `<button class="btn btn-outline-danger w-100 fw-bold py-2"
+            onclick="cancelarReserva('${clase.id}','${clase.nombre}')">
+            <i class="fa-solid fa-xmark me-2"></i>Cancelar Reserva</button>`;
+    } else if (llena) {
+        botonHtml = `<button class="btn btn-secondary w-100 fw-bold py-2" disabled>
+            <i class="fa-solid fa-ban me-2"></i>Clase Llena</button>`;
+    } else {
+        botonHtml = `<button class="btn btn-primary w-100 fw-bold py-2"
+            onclick="reservarLugar('${clase.id}','${clase.nombre}')">
+            <i class="fa-solid fa-calendar-plus me-2"></i>Reservar mi lugar</button>`;
+    }
+
+    const placesBg   = llena ? 'bg-danger bg-opacity-10 border-danger' : 'bg-light border-secondary border-opacity-10';
+    const placesText = llena ? 'text-danger' : 'text-gray-800';
+
+    const col = document.createElement('div');
+    col.className = 'col-12 col-md-6 col-lg-4 mb-4';
+    col.innerHTML = `
+        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 mb-2 rounded-pill px-3 py-1">FITFAB Studio</span>
+                        <h5 class="fw-bold mb-1">${clase.nombre}</h5>
+                        <p class="text-muted small mb-0"><i class="fa-solid fa-user-ninja me-1 text-secondary"></i>${clase.instructor_nombre || clase.coach || 'Entrenador'}</p>
+                    </div>
+                    <div class="bg-light rounded p-2 text-center border shadow-sm">
+                        <span class="d-block fw-bold text-primary fs-5 lh-1">${horario}</span>
+                        <span class="d-block text-muted mt-1" style="font-size:0.65rem;font-weight:700">HRS</span>
+                    </div>
+                </div>
+                <div class="${placesBg} rounded-3 p-3 mb-4 border">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold ${placesText} small"><i class="fa-solid fa-users me-2"></i>Lugares disponibles</span>
+                        <span class="fw-bold px-2 py-1 rounded ${llena ? 'bg-danger bg-opacity-10 text-danger' : 'bg-success bg-opacity-10 text-success'}">${lugares} / ${capacidad}</span>
+                    </div>
+                </div>
+                ${botonHtml}
+            </div>
+        </div>`;
+    contenedor.appendChild(col);
 }
 
 window.reservarLugar = async function(idClase, nombreClase) {
@@ -325,13 +366,31 @@ async function renderizarPagos(socio) {
     const listGroup = document.getElementById('historialPagosList');
     if (!listGroup) return;
 
+    // Actualizar cabecera de resumen (plan y vencimiento)
+    const elPlanNombre  = document.getElementById('resumenPlanNombre');
+    const elVencimiento = document.getElementById('resumenVencimiento');
+    const elBadge       = document.getElementById('estadoPagoBadge');
+    if (elPlanNombre)  elPlanNombre.textContent  = socio.planes?.nombre || 'Sin plan';
+    if (elVencimiento) elVencimiento.textContent = formatearFecha(socio.vencimiento);
+    if (elBadge) {
+        const estadoUI = calcularEstado(socio);
+        const badges = {
+            Activo : { cls: 'badge bg-white text-success rounded-pill px-3 py-2 fw-bold shadow-sm', txt: '<i class="fa-solid fa-circle-check me-1"></i>Activo' },
+            Alerta : { cls: 'badge bg-white text-warning rounded-pill px-3 py-2 fw-bold shadow-sm', txt: '<i class="fa-solid fa-triangle-exclamation me-1"></i>Por vencer' },
+            Deudor : { cls: 'badge bg-white text-danger rounded-pill px-3 py-2 fw-bold shadow-sm',  txt: '<i class="fa-solid fa-lock me-1"></i>Suspendido' },
+        };
+        const b = badges[estadoUI] || badges.Activo;
+        elBadge.className = b.cls;
+        elBadge.innerHTML = b.txt;
+    }
+
     listGroup.innerHTML = '<div class="text-center py-4"><span class="spinner-border text-primary"></span></div>';
 
     const { data: pagos, error } = await window.supabaseClient
         .from('pagos')
         .select('*, planes(nombre)')
         .eq('socio_id', socio.id)
-        .order('fecha_pago', { ascending: false });
+        .order('fecha', { ascending: false });
 
     if (error) {
         listGroup.innerHTML = '<div class="text-center text-danger py-4">Error al cargar historial.</div>';
@@ -361,7 +420,7 @@ async function renderizarPagos(socio) {
                             <i class="fa-solid fa-crown text-warning me-1"></i>${pago.planes?.nombre || 'Plan'}
                         </span>
                     </div>
-                    <span class="text-muted small fw-medium">${formatearFecha(pago.fecha_pago)}</span>
+                    <span class="text-muted small fw-medium">${formatearFecha(pago.fecha)}</span>
                 </div>
             </div>`;
     });
@@ -396,7 +455,17 @@ window.mostrarRegularizarPago = function() {
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 
+async function actualizarMorosos() {
+    const hoy = new Date().toISOString().split('T')[0];
+    await window.supabaseClient
+        .from('socios')
+        .update({ estado: 'Moroso' })
+        .eq('estado', 'Activo')
+        .lt('vencimiento', hoy);
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+    await actualizarMorosos();
     socioActual = await cargarSocio();
     if (!socioActual) return;
 

@@ -29,7 +29,7 @@ async function cargarMetricas() {
     { data: ultimosPagosData },
     { data: planesData },
   ] = await Promise.all([
-    window.supabaseClient.from('socios').select('estado, vencimiento'),
+    window.supabaseClient.from('socios').select('estado, vencimiento, plan_id'),
     window.supabaseClient.from('pagos').select('monto').gte('fecha', inicioMes).lte('fecha', finMes),
     window.supabaseClient
       .from('socios')
@@ -59,9 +59,16 @@ async function cargarMetricas() {
   const elIngresos = document.getElementById('statIngresosMes');
   if (elIngresos) elIngresos.textContent = `S/ ${totalMes.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`;
 
-  // Asistencias hoy (inscritos en clases activas de hoy)
+  // Asistencias hoy: registros de acceso con resultado 'Permitido' del día de hoy
   const elAsistencias = document.getElementById('statAsistenciasHoy');
-  if (elAsistencias) elAsistencias.textContent = activos > 0 ? activos : '0';
+  if (elAsistencias) {
+    const { count } = await window.supabaseClient
+        .from('registros_acceso')
+        .select('id', { count: 'exact', head: true })
+        .eq('resultado', 'Permitido')
+        .eq('fecha', hoy.split('T')[0]);
+    elAsistencias.textContent = count ?? 0;
+  }
 
   // Tabla próximos vencimientos
   const tablaVenc = document.getElementById('tablaVencimientos');
@@ -97,12 +104,17 @@ async function cargarMetricas() {
     }
   }
 
-  // Actualizar gráfico circular con planes reales
+  // Actualizar gráfico circular con conteo real de socios por plan
   if (planesData && circularChart) {
     const actv = (planesData || []).filter(p => p.estado === 'Activo');
+    const conteosPorPlan = actv.map(plan =>
+        (sociosData || []).filter(s =>
+            s.plan_id === plan.id && (s.estado === 'Activo' || s.estado === 'Moroso')
+        ).length
+    );
     circularChart.data.labels = actv.map(p => p.nombre);
     circularChart.data.datasets[0].backgroundColor = actv.map(p => p.color || '#0d6efd');
-    circularChart.data.datasets[0].data = actv.map(() => Math.floor(Math.random() * 40) + 10);
+    circularChart.data.datasets[0].data = conteosPorPlan;
     circularChart.update();
   }
 

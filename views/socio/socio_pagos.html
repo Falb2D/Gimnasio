@@ -67,29 +67,6 @@
           <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
               <div id="portalEstadoBanner"></div>
-              <div class="state-buttons d-flex gap-2 flex-wrap mb-4">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-success"
-                  onclick="mostrarEstado('Activo')"
-                >
-                  Test Activo
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-warning"
-                  onclick="mostrarEstado('Alerta')"
-                >
-                  Test Alerta
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-danger"
-                  onclick="mostrarEstado('Deudor')"
-                >
-                  Test Deudor
-                </button>
-              </div>
               <div class="mb-4 text-center">
                 <h3 class="fw-bold text-gray-800">Mi Membresía</h3>
                 <p class="text-muted small">
@@ -116,7 +93,7 @@
                       Activo</span
                     >
                   </div>
-                  <h2 class="fw-bold mb-0">Mensual Ilimitado</h2>
+                  <h2 id="resumenPlanNombre" class="fw-bold mb-0">—</h2>
                 </div>
                 <div class="card-body p-4 bg-white">
                   <div
@@ -127,9 +104,7 @@
                         <i class="fa-regular fa-calendar text-primary me-1"></i>
                         Próximo Vencimiento
                       </p>
-                      <h6 class="fw-bold text-gray-800 m-0">
-                        15 de Junio, 2026
-                      </h6>
+                      <h6 id="resumenVencimiento" class="fw-bold text-gray-800 m-0">—</h6>
                     </div>
                     <div class="text-end">
                       <p class="text-muted small fw-medium mb-1">
