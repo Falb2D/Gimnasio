@@ -180,6 +180,7 @@ async function renderizarUsuarios() {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td class="ps-4 fw-medium text-gray-800">${usuario.nombres} ${usuario.apellidos}</td>
+      <td class="text-muted font-monospace small">${usuario.username || '—'}</td>
       <td class="text-muted">${usuario.email}</td>
       <td class="text-center">
         <span class="badge bg-primary bg-opacity-10 text-primary px-2 py-1 rounded-pill">
@@ -211,14 +212,17 @@ window.abrirModalEditarUsuario = async function (usuarioId) {
 
   if (error || !usuario) return;
 
-  document.getElementById("editarStaffId").value        = usuario.id;
-  document.getElementById("editarDniStaff").value        = usuario.dni || "";
-  document.getElementById("editarNombresStaff").value    = usuario.nombres || "";
-  document.getElementById("editarApellidosStaff").value  = usuario.apellidos || "";
-  document.getElementById("editarTelefonoStaff").value   = usuario.telefono || "";
-  document.getElementById("editarEmailStaff").value      = usuario.email || "";
-  document.getElementById("editarRolStaff").value        = usuario.rol || "instructor";
-  document.getElementById("editarEstadoStaff").value     = usuario.estado || "Activo";
+  document.getElementById("editarStaffId").value           = usuario.id;
+  document.getElementById("editarDniStaff").value          = usuario.dni || "";
+  document.getElementById("editarNombresStaff").value      = usuario.nombres || "";
+  document.getElementById("editarApellidosStaff").value    = usuario.apellidos || "";
+  document.getElementById("editarTelefonoStaff").value     = usuario.telefono || "";
+  document.getElementById("editarEmailStaff").value        = usuario.email || "";
+  document.getElementById("editarRolStaff").value          = usuario.rol || "instructor";
+  document.getElementById("editarEstadoStaff").value       = usuario.estado || "Activo";
+  document.getElementById("editarUsernameStaff").value     = usuario.username || "";
+  const editarPass = document.getElementById("editarPassStaff");
+  if (editarPass) editarPass.value = "";
 
   bootstrap.Modal.getOrCreateInstance(document.getElementById("modalEditarStaff")).show();
 };
@@ -256,19 +260,24 @@ document.addEventListener("DOMContentLoaded", () => {
       const telefono = document.getElementById("telefonoStaff").value.trim();
       const email    = document.getElementById("emailStaff").value.trim();
       const rol      = document.getElementById("rolStaff").value;
+      const username = document.getElementById("usernameStaff").value.trim().toLowerCase();
+      const passRaw  = document.getElementById("passStaff").value;
 
-      if (!dni || !nombres || !apellidos || !telefono || !email || !rol) {
+      if (!dni || !nombres || !apellidos || !telefono || !email || !rol || !username || !passRaw) {
         Swal.fire({ title: "Error", text: "Completa todos los campos del formulario.", icon: "error" });
         return;
       }
 
+      const password = await sha256(passRaw);
+
       const { error } = await window.supabaseClient
         .from("usuarios")
-        .insert({ dni, nombres, apellidos, telefono, email, rol, estado: "Activo" });
+        .insert({ dni, nombres, apellidos, telefono, email, rol, username, password, estado: "Activo" });
 
       if (error) {
         console.error("Error al crear usuario:", error);
-        Swal.fire({ title: "Error", text: "No se pudo crear el usuario.", icon: "error" });
+        const msg = error.code === "23505" ? "El nombre de usuario ya existe." : "No se pudo crear el usuario.";
+        Swal.fire({ title: "Error", text: msg, icon: "error" });
         return;
       }
 
@@ -291,20 +300,28 @@ document.addEventListener("DOMContentLoaded", () => {
       const email    = document.getElementById("editarEmailStaff").value.trim();
       const rol      = document.getElementById("editarRolStaff").value;
       const estado   = document.getElementById("editarEstadoStaff").value;
+      const username = document.getElementById("editarUsernameStaff").value.trim().toLowerCase();
+      const passRaw  = document.getElementById("editarPassStaff").value;
 
-      if (!id || !dni || !nombres || !apellidos || !telefono || !email || !rol || !estado) {
+      if (!id || !dni || !nombres || !apellidos || !telefono || !email || !rol || !estado || !username) {
         Swal.fire({ title: "Error", text: "Completa todos los campos del formulario.", icon: "error" });
         return;
       }
 
+      const updateData = { dni, nombres, apellidos, telefono, email, rol, estado, username };
+      if (passRaw) {
+        updateData.password = await sha256(passRaw);
+      }
+
       const { error } = await window.supabaseClient
         .from("usuarios")
-        .update({ dni, nombres, apellidos, telefono, email, rol, estado })
+        .update(updateData)
         .eq("id", id);
 
       if (error) {
         console.error("Error al actualizar usuario:", error);
-        Swal.fire({ title: "Error", text: "No se pudo actualizar el usuario.", icon: "error" });
+        const msg = error.code === "23505" ? "El nombre de usuario ya existe." : "No se pudo actualizar el usuario.";
+        Swal.fire({ title: "Error", text: msg, icon: "error" });
         return;
       }
 
