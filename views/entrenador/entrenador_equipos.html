@@ -1,172 +1,308 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FITFAB S.A.C. - Entrenador | Equipos</title>
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <!-- FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../../public/css/styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="../../public/css/styles.css" />
+  </head>
+  <body>
     <div class="wrapper d-flex">
-        
-        <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar bg-dark text-white shadow">
-            <div class="sidebar-header p-3 border-bottom border-secondary d-flex justify-content-between align-items-center">
-                <h4 class="m-0 fw-bold d-flex align-items-center">
-                    <i class="fa-solid fa-dumbbell text-primary me-2"></i> FITFAB
-                </h4>
-                <button type="button" id="sidebarClose" class="btn text-white d-md-none p-0">
-                    <i class="fa-solid fa-xmark fs-4"></i>
-                </button>
-            </div>
-            
-            <nav class="sidebar-nav py-4 px-2">
-                <ul class="nav flex-column gap-1">
-                    <li class="nav-item">
-                        <a href="./entrenador.html" class="nav-link rounded text-white">
-                            <i class="fa-regular fa-calendar-check fa-fw me-2"></i> Mis Clases
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="./entrenador_equipos.html" class="nav-link rounded text-white active">
-                            <i class="fa-solid fa-screwdriver-wrench fa-fw me-2"></i> Reporte de Equipos
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-
-        <!-- Main Content Area -->
-        <div class="main-content flex-grow-1 d-flex flex-column">
-            
-            <!-- Header -->
-            <header class="header bg-white shadow-sm px-4 py-3 d-flex justify-content-between align-items-center z-1">
-                <div class="d-flex align-items-center">
-                    <button id="sidebarToggle" class="btn btn-light d-md-none me-3 border-0">
-                        <i class="fa-solid fa-bars fs-5"></i>
-                    </button>
-                    <!-- Visible on small screens, hidden when very narrow if needed -->
-                    <h5 class="m-0 fw-bold text-dark d-none d-sm-block">FITFAB S.A.C.</h5>
-                </div>
-                
-                <div class="user-profile d-flex align-items-center gap-3">
-                    <div class="text-end d-none d-md-block">
-                        <p class="m-0 fw-semibold text-dark lh-1">Entrenador</p>
-                        <small class="text-success fw-medium" style="font-size: 0.75rem;">
-                            <i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> En turno
-                        </small>
-                    </div>
-                    <img src="https://ui-avatars.com/api/?name=Entrenador&background=198754&color=fff&rounded=true" alt="Entrenador" class="rounded-circle shadow-sm" width="40" height="40">
-                    <button class="btn btn-outline-danger btn-sm d-none d-sm-flex align-items-center ms-2 fw-medium">
-                        <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar Sesión
-                    </button>
-                    <!-- Mobile logout icon -->
-                    <button class="btn btn-danger btn-sm d-sm-none">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                    </button>
-                </div>
-            </header>
-
-            <!-- Dynamic Content Area -->
-            <main class="p-4 flex-grow-1 overflow-auto bg-light">
-                <div class="container-fluid px-0">
-                    
-                    <!-- Header y Alerta -->
-                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-                        <div>
-                            <h2 class="h3 mb-1 fw-bold text-gray-800">Estado de Equipos</h2>
-                            <p class="text-muted mb-0">Consulta la disponibilidad de máquinas y reporta averías.</p>
-                        </div>
-                        <button class="btn btn-danger fw-bold shadow px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalReporte">
-                            <i class="fa-solid fa-triangle-exclamation me-2 fs-5 align-middle"></i> Reportar Falla en Equipo
-                        </button>
-                    </div>
-
-                    <!-- Buscador -->
-                    <div class="card border-0 shadow-sm rounded-4 mb-4">
-                        <div class="card-body p-3">
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
-                                <input type="text" class="form-control border-start-0 ps-0" placeholder="Buscar equipo por código o nombre...">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tabla de Equipos -->
-                    <div class="card border-0 shadow-sm rounded-4">
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th class="ps-4 py-3 text-muted fw-semibold">Código</th>
-                                            <th class="py-3 text-muted fw-semibold">Nombre del Equipo</th>
-                                            <th class="py-3 text-muted fw-semibold">Ubicación</th>
-                                            <th class="pe-4 py-3 text-muted fw-semibold text-center">Estado Actual</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbodyEquipos">
-                                        <!-- Renderizado dinámicamente -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
+      <!-- Sidebar -->
+      <aside id="sidebar" class="sidebar bg-dark text-white shadow">
+        <div
+          class="sidebar-header p-3 border-bottom border-secondary d-flex justify-content-between align-items-center"
+        >
+          <h4 class="m-0 fw-bold d-flex align-items-center">
+            <i class="fa-solid fa-dumbbell text-primary me-2"></i> FITFAB
+          </h4>
+          <button
+            type="button"
+            id="sidebarClose"
+            class="btn text-white d-md-none p-0"
+          >
+            <i class="fa-solid fa-xmark fs-4"></i>
+          </button>
         </div>
+
+        <nav class="sidebar-nav py-4 px-2">
+          <ul class="nav flex-column gap-1">
+            <li class="nav-item">
+              <a href="./entrenador.html" class="nav-link rounded text-white">
+                <i class="fa-regular fa-calendar-check fa-fw me-2"></i> Mis
+                Clases
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="./entrenador_equipos.html"
+                class="nav-link rounded text-white active"
+              >
+                <i class="fa-solid fa-screwdriver-wrench fa-fw me-2"></i>
+                Reporte de Equipos
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <div class="main-content flex-grow-1 d-flex flex-column">
+        <!-- Header -->
+        <header
+          class="header bg-white shadow-sm px-4 py-3 d-flex justify-content-between align-items-center z-1"
+        >
+          <div class="d-flex align-items-center">
+            <button
+              id="sidebarToggle"
+              class="btn btn-light d-md-none me-3 border-0"
+            >
+              <i class="fa-solid fa-bars fs-5"></i>
+            </button>
+            <!-- Visible on small screens, hidden when very narrow if needed -->
+            <h5 class="m-0 fw-bold text-dark d-none d-sm-block">
+              FITFAB S.A.C.
+            </h5>
+          </div>
+
+          <div class="user-profile d-flex align-items-center gap-3">
+            <div class="text-end d-none d-md-block">
+              <p class="m-0 fw-semibold text-dark lh-1">Entrenador</p>
+              <small class="text-success fw-medium" style="font-size: 0.75rem">
+                <i
+                  class="fa-solid fa-circle"
+                  style="font-size: 0.5rem; vertical-align: middle"
+                ></i>
+                En turno
+              </small>
+            </div>
+            <div
+              data-perfil-selector
+              class="btn-group btn-group-sm"
+              role="group"
+              aria-label="Selector de perfil entrenador"
+            >
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                data-perfil-tipo="clases"
+                title="Vista: Instructor de Clases"
+              >
+                <i class="fa-solid fa-chalkboard-user"></i>
+                <span class="d-none d-md-inline ms-1">Clases</span>
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                data-perfil-tipo="piso"
+                title="Vista: Coach de Piso"
+              >
+                <i class="fa-solid fa-dumbbell"></i>
+                <span class="d-none d-md-inline ms-1">Piso</span>
+              </button>
+            </div>
+            <img
+              src="https://ui-avatars.com/api/?name=Entrenador&background=198754&color=fff&rounded=true"
+              alt="Entrenador"
+              class="rounded-circle shadow-sm"
+              width="40"
+              height="40"
+            />
+            <button
+              class="btn btn-outline-danger btn-sm d-none d-sm-flex align-items-center ms-2 fw-medium"
+            >
+              <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar Sesión
+            </button>
+            <!-- Mobile logout icon -->
+            <button class="btn btn-danger btn-sm d-sm-none">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Dynamic Content Area -->
+        <main class="p-4 flex-grow-1 overflow-auto bg-light">
+          <div class="container-fluid px-0">
+            <!-- Header y Alerta -->
+            <div
+              class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3"
+            >
+              <div>
+                <h2 class="h3 mb-1 fw-bold text-gray-800">Estado de Equipos</h2>
+                <p class="text-muted mb-0">
+                  Consulta la disponibilidad de máquinas y reporta averías.
+                </p>
+              </div>
+              <button
+                class="btn btn-danger fw-bold shadow px-4 py-2"
+                data-bs-toggle="modal"
+                data-bs-target="#modalReporte"
+              >
+                <i
+                  class="fa-solid fa-triangle-exclamation me-2 fs-5 align-middle"
+                ></i>
+                Reportar Falla en Equipo
+              </button>
+            </div>
+
+            <!-- Buscador -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+              <div class="card-body p-3">
+                <div class="input-group input-group-lg">
+                  <span
+                    class="input-group-text bg-white border-end-0 text-muted"
+                    ><i class="fa-solid fa-magnifying-glass"></i
+                  ></span>
+                  <input
+                    type="text"
+                    class="form-control border-start-0 ps-0"
+                    placeholder="Buscar equipo por código o nombre..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabla de Equipos -->
+            <div class="card border-0 shadow-sm rounded-4">
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th class="ps-4 py-3 text-muted fw-semibold">Código</th>
+                        <th class="py-3 text-muted fw-semibold">
+                          Nombre del Equipo
+                        </th>
+                        <th class="py-3 text-muted fw-semibold">Ubicación</th>
+                        <th
+                          class="pe-4 py-3 text-muted fw-semibold text-center"
+                        >
+                          Estado Actual
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyEquipos">
+                      <!-- Renderizado dinámicamente -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
 
     <!-- Modal Reportar Falla -->
-    <div class="modal fade" id="modalReporte" tabindex="-1" aria-labelledby="modalReporteLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0 shadow-lg">
-                <div class="modal-header border-bottom bg-danger bg-opacity-10 pb-3">
-                    <h5 class="modal-title fw-bold text-danger" id="modalReporteLabel"><i class="fa-solid fa-triangle-exclamation me-2"></i> Reportar Falla</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form id="formReporteIncidencia">
-                        <div class="mb-3">
-                            <label for="selectEquipo" class="form-label fw-medium text-gray-800">Equipo Afectado <span class="text-danger">*</span></label>
-                            <select class="form-select" id="selectEquipo" required>
-                                <option value="" selected disabled>Seleccione el equipo...</option>
-                                <!-- Renderizado dinámicamente -->
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="selectTipoFalla" class="form-label fw-medium text-gray-800">Tipo de Mantenimiento <span class="text-danger">*</span></label>
-                            <select class="form-select" id="selectTipoFalla" required>
-                                <option value="" selected disabled>Seleccione tipo...</option>
-                                <option value="Correctivo">Correctivo (Equipo roto / Falla detectada)</option>
-                                <option value="Preventivo">Preventivo (Ruido extraño / Desgaste visible)</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label for="descFalla" class="form-label fw-medium text-gray-800">Descripción del Problema <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="descFalla" rows="4" placeholder="Describa qué sucedió o qué observó en la máquina..." required></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer border-top pt-3 pb-4 px-4 bg-light rounded-bottom-4">
-                    <button type="button" class="btn btn-outline-secondary fw-medium" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" form="formReporteIncidencia" class="btn btn-danger fw-bold shadow-sm px-4"><i class="fa-solid fa-paper-plane me-2"></i> Enviar Reporte</button>
-                </div>
-            </div>
+    <div
+      class="modal fade"
+      id="modalReporte"
+      tabindex="-1"
+      aria-labelledby="modalReporteLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+          <div class="modal-header border-bottom bg-danger bg-opacity-10 pb-3">
+            <h5 class="modal-title fw-bold text-danger" id="modalReporteLabel">
+              <i class="fa-solid fa-triangle-exclamation me-2"></i> Reportar
+              Falla
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body p-4">
+            <form id="formReporteIncidencia">
+              <div class="mb-3">
+                <label
+                  for="selectEquipo"
+                  class="form-label fw-medium text-gray-800"
+                  >Equipo Afectado <span class="text-danger">*</span></label
+                >
+                <select class="form-select" id="selectEquipo" required>
+                  <option value="" selected disabled>
+                    Seleccione el equipo...
+                  </option>
+                  <!-- Renderizado dinámicamente -->
+                </select>
+              </div>
+              <div class="mb-3">
+                <label
+                  for="selectTipoFalla"
+                  class="form-label fw-medium text-gray-800"
+                  >Tipo de Mantenimiento
+                  <span class="text-danger">*</span></label
+                >
+                <select class="form-select" id="selectTipoFalla" required>
+                  <option value="" selected disabled>Seleccione tipo...</option>
+                  <option value="Correctivo">
+                    Correctivo (Equipo roto / Falla detectada)
+                  </option>
+                  <option value="Preventivo">
+                    Preventivo (Ruido extraño / Desgaste visible)
+                  </option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label
+                  for="descFalla"
+                  class="form-label fw-medium text-gray-800"
+                  >Descripción del Problema
+                  <span class="text-danger">*</span></label
+                >
+                <textarea
+                  class="form-control"
+                  id="descFalla"
+                  rows="4"
+                  placeholder="Describa qué sucedió o qué observó en la máquina..."
+                  required
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div
+            class="modal-footer border-top pt-3 pb-4 px-4 bg-light rounded-bottom-4"
+          >
+            <button
+              type="button"
+              class="btn btn-outline-secondary fw-medium"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              form="formReporteIncidencia"
+              class="btn btn-danger fw-bold shadow-sm px-4"
+            >
+              <i class="fa-solid fa-paper-plane me-2"></i> Enviar Reporte
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="../../public/js/admin/script.js"></script>
-<script src="../../public/js/shared/utils.js"></script>
-<script src="../../public/js/entrenador/equipos.js"></script>
-</body>
+    <script src="../../public/js/shared/utils.js"></script>
+    <script src="../../public/js/entrenador/perfilEntrenador.js"></script>
+    <script src="../../public/js/entrenador/equipos.js"></script>
+  </body>
 </html>
-

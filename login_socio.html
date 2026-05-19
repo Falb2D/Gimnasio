@@ -1,132 +1,236 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FITFAB S.A.C. - Acceso Socios</title>
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <!-- CSS Modular -->
-    <link rel="stylesheet" href="../public/css/login.css">
-</head>
-<body class="bg-image bg-socio">
-
+    <link rel="stylesheet" href="../public/css/login.css" />
+  </head>
+  <body class="bg-image bg-socio">
     <div class="login-card">
-        
-        <!-- Logo Flotante -->
-        <div class="logo-circle">
-            <i class="fa-solid fa-dumbbell"></i>
+      <!-- Logo Flotante -->
+      <div class="logo-circle">
+        <i class="fa-solid fa-dumbbell"></i>
+      </div>
+
+      <!-- Mensaje de bienvenida -->
+      <h2 class="fw-bold text-dark mb-2">¡Hola!</h2>
+      <p class="text-muted fw-medium mb-4">Accede a tu portal de socio</p>
+
+      <!-- Formulario -->
+      <form id="formAccesoSocio" novalidate>
+        <!-- Correo electrónico -->
+        <div class="mb-3 text-start">
+          <label
+            for="emailSocio"
+            class="form-label fw-medium text-muted small mb-1"
+            >Correo electrónico</label
+          >
+          <div
+            class="input-group shadow-sm rounded border border-1 border-secondary-subtle bg-white overflow-hidden"
+          >
+            <span class="input-group-text bg-white border-0 text-primary"
+              ><i class="fa-regular fa-envelope"></i
+            ></span>
+            <input
+              type="email"
+              class="form-control border-0"
+              id="emailSocio"
+              placeholder="Correo electrónico"
+              autocomplete="email"
+              required
+            />
+          </div>
+          <div class="invalid-feedback fw-medium small ps-2">
+            Ingresa un correo electrónico válido.
+          </div>
         </div>
-        
-        <!-- Mensaje de bienvenida -->
-        <h2 class="fw-bold text-dark mb-2">¡Hola!</h2>
-        <p class="text-muted fw-medium mb-4">Accede a tu portal de socio</p>
 
-        <!-- Formulario -->
-        <form id="formAccesoSocio" novalidate>
-            
-            <!-- Campo DNI -->
-            <div class="form-floating mb-3 text-start">
-                <input type="text" class="form-control" id="dniSocio" placeholder="DNI" maxlength="8" pattern="\d{8}" required>
-                <label for="dniSocio"><i class="fa-regular fa-id-card me-2 text-primary"></i>Ingresa tu DNI</label>
-                <div class="invalid-feedback fw-medium small ps-2">
-                    Ingresa un DNI válido de 8 dígitos numéricos.
-                </div>
-            </div>
-
-            <!-- Campo Fecha de Nacimiento -->
-            <div class="form-floating mb-4 text-start">
-                <input type="date" class="form-control" id="fechaNacimiento" placeholder="Fecha de Nacimiento" required>
-                <label for="fechaNacimiento"><i class="fa-regular fa-calendar-days me-2 text-primary"></i>Fecha de Nacimiento</label>
-                <div class="invalid-feedback fw-medium small ps-2">
-                    Por favor, selecciona tu fecha de nacimiento.
-                </div>
-            </div>
-
-            <!-- Botón Principal -->
-            <button type="submit" class="btn btn-primary w-100 btn-ingresar mb-4">
-                Ingresar a mi perfil <i class="fa-solid fa-chevron-right ms-2 small"></i>
+        <!-- Contraseña -->
+        <div class="mb-3 text-start">
+          <label
+            for="passwordSocio"
+            class="form-label fw-medium text-muted small mb-1"
+            >Contraseña</label
+          >
+          <div
+            class="input-group shadow-sm rounded border border-1 border-secondary-subtle bg-white overflow-hidden"
+          >
+            <span class="input-group-text bg-white border-0 text-primary"
+              ><i class="fa-solid fa-lock"></i
+            ></span>
+            <input
+              type="password"
+              class="form-control border-0"
+              id="passwordSocio"
+              placeholder="Contraseña"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary border-0"
+              id="togglePassword"
+              aria-label="Mostrar contraseña"
+            >
+              <i class="fa-solid fa-eye"></i>
             </button>
-        </form>
+          </div>
+          <div class="d-flex justify-content-end mt-2">
+            <a href="#" class="text-decoration-none small text-muted"
+              >¿Olvidaste tu contraseña?</a
+            >
+          </div>
+          <div class="invalid-feedback fw-medium small ps-2">
+            Ingresa tu contraseña para continuar.
+          </div>
+        </div>
 
-        <!-- Enlace Secundario -->
-        <a href="#" class="text-decoration-none text-muted small fw-medium" onclick="alert('Dirígete a la recepción del gimnasio FITFAB para adquirir tu plan. ¡Te esperamos!')">
-            ¿Aún no eres socio? <span class="text-primary fw-bold text-decoration-underline">Acércate a recepción</span>
-        </a>
+        <!-- Botón Principal -->
+        <button type="submit" class="btn btn-primary w-100 btn-ingresar mb-3">
+          Iniciar Sesión <i class="fa-solid fa-chevron-right ms-2 small"></i>
+        </button>
 
+        <!-- Separador Visual -->
+        <div class="d-flex align-items-center mb-3">
+          <div class="border-top flex-grow-1"></div>
+          <span class="px-3 text-muted small">O continúa con</span>
+          <div class="border-top flex-grow-1"></div>
+        </div>
+
+        <!-- Botón Google -->
+        <button
+          type="button"
+          class="btn btn-light w-100 border border-secondary-subtle text-dark d-flex align-items-center justify-content-center gap-2 mb-4"
+          id="btnGoogleLogin"
+        >
+          <span
+            class="d-flex align-items-center justify-content-center"
+            style="width: 24px; height: 24px"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M17.64 9.20455C17.64 8.56636 17.5773 7.95182 17.4582 7.35818H9V10.8455H13.84C13.6946 11.8455 13.0846 12.6855 12.1646 13.2045V15.1291H14.9318C16.6846 13.5455 17.64 11.1364 17.64 9.20455Z"
+                fill="#4285F4"
+              />
+              <path
+                d="M9 18C11.43 18 13.4318 17.1273 14.9318 15.1291L12.1646 13.2045C11.4318 13.6909 10.52 13.9727 9 13.9727C6.66273 13.9727 4.71273 12.4 4.15455 10.3H1.24545V12.3182C2.74545 15.6364 5.70909 18 9 18Z"
+                fill="#34A853"
+              />
+              <path
+                d="M4.15455 10.3C3.96545 9.69091 3.86545 9.04545 3.86545 8.36364C3.86545 7.68182 3.96545 7.03636 4.15455 6.42727V4.40909H1.24545C0.534545 5.75455 0.09 7.30636 0.09 8.36364C0.09 9.42091 0.534545 10.9727 1.24545 12.3182L4.15455 10.3Z"
+                fill="#FBBC05"
+              />
+              <path
+                d="M9 3.72727C10.5618 3.72727 11.9345 4.28182 12.9955 5.34091L15.0591 3.27727C13.43 1.78182 11.43 0.9 9 0.9C5.70909 0.9 2.74545 3.26364 1.24545 6.58182L4.15455 8.6C4.71273 6.5 6.66273 3.72727 9 3.72727Z"
+                fill="#EA4335"
+              />
+            </svg>
+          </span>
+          Continuar con Google
+        </button>
+      </form>
+
+      <!-- Enlace Secundario -->
+      <a
+        href="#"
+        class="text-decoration-none text-muted small fw-medium"
+        onclick="
+          alert(
+            'Dirígete a la recepción del gimnasio FITFAB para adquirir tu plan. ¡Te esperamos!',
+          )
+        "
+      >
+        ¿Aún no eres socio?
+        <span class="text-primary fw-bold text-decoration-underline"
+          >Acércate a recepción</span
+        >
+      </a>
     </div>
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('formAccesoSocio');
-            const dniInput = document.getElementById('dniSocio');
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("formAccesoSocio");
+        const emailInput = document.getElementById("emailSocio");
+        const passwordInput = document.getElementById("passwordSocio");
+        const togglePassword = document.getElementById("togglePassword");
 
-            // 1. Prevención en tiempo real: Solo permite escribir números
-            dniInput.addEventListener('input', function(e) {
-                this.value = this.value.replace(/[^0-9]/g, '');
-            });
-
-            // 2. Validación al enviar el formulario
-            form.addEventListener('submit', function(event) {
-                event.preventDefault(); // Evita recargar
-                
-                let isValid = true;
-                
-                // Extraer valores
-                const dniValue = dniInput.value.trim();
-                const fechaInput = document.getElementById('fechaNacimiento');
-                
-                // Expresión regular: Exactamente 8 dígitos del 0 al 9
-                const dniRegex = /^[0-9]{8}$/;
-                
-                // Validar DNI
-                if (!dniRegex.test(dniValue)) {
-                    dniInput.classList.remove('is-valid');
-                    dniInput.classList.add('is-invalid');
-                    isValid = false;
-                } else {
-                    dniInput.classList.remove('is-invalid');
-                    dniInput.classList.add('is-valid');
-                }
-
-                // Validar Fecha de Nacimiento
-                if (!fechaInput.value) {
-                    fechaInput.classList.remove('is-valid');
-                    fechaInput.classList.add('is-invalid');
-                    isValid = false;
-                } else {
-                    fechaInput.classList.remove('is-invalid');
-                    fechaInput.classList.add('is-valid');
-                }
-
-                // 3. Flujo de Éxito
-                if (isValid) {
-                    const btnSubmit = form.querySelector('button[type="submit"]');
-                    const originalText = btnSubmit.innerHTML;
-                    
-                    // Mostrar animación de carga
-                    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Validando...';
-                    btnSubmit.disabled = true;
-
-                    // Imprimir datos en consola (como requerimiento)
-                    console.log('--- AUTENTICACIÓN DE SOCIO ---');
-                    console.log('DNI:', dniValue);
-                    console.log('Fecha Nacimiento:', fechaInput.value);
-
-                    // Simular validación en base de datos y redirección
-                    setTimeout(() => {
-                        // En tu proyecto real, esto te llevará al index del socio:
-                        window.location.href = 'views/socio/socio.html';
-                    }, 1200);
-                }
-            });
+        togglePassword.addEventListener("click", function () {
+          const type =
+            passwordInput.getAttribute("type") === "password"
+              ? "text"
+              : "password";
+          passwordInput.setAttribute("type", type);
+          this.innerHTML =
+            type === "password"
+              ? '<i class="fa-solid fa-eye"></i>'
+              : '<i class="fa-solid fa-eye-slash"></i>';
         });
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          let isValid = true;
+          const emailValue = emailInput.value.trim();
+          const passwordValue = passwordInput.value.trim();
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+          if (!emailRegex.test(emailValue)) {
+            emailInput.classList.add("is-invalid");
+            emailInput.classList.remove("is-valid");
+            isValid = false;
+          } else {
+            emailInput.classList.remove("is-invalid");
+            emailInput.classList.add("is-valid");
+          }
+
+          if (!passwordValue) {
+            passwordInput.classList.add("is-invalid");
+            passwordInput.classList.remove("is-valid");
+            isValid = false;
+          } else {
+            passwordInput.classList.remove("is-invalid");
+            passwordInput.classList.add("is-valid");
+          }
+
+          if (isValid) {
+            const btnSubmit = form.querySelector('button[type="submit"]');
+            btnSubmit.innerHTML =
+              '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Iniciando sesión...';
+            btnSubmit.disabled = true;
+
+            console.log("--- LOGIN SOCIO ---");
+            console.log("Correo:", emailValue);
+            console.log("Contraseña:", passwordValue ? "********" : "");
+
+            setTimeout(() => {
+              window.location.href = "views/socio/socio.html";
+            }, 900);
+          }
+        });
+      });
     </script>
-<script src="./public/js/shared/utils.js"></script>
-</body>
+    <script src="./public/js/shared/utils.js"></script>
+  </body>
 </html>

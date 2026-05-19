@@ -1,237 +1,484 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FITFAB S.A.C. - Panel de Administración</title>
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <!-- FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Litepicker CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css"
+    />
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../../public/css/styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="../../public/css/styles.css" />
+  </head>
+  <body>
     <div class="wrapper d-flex">
-        
-        <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar bg-dark text-white shadow">
-            <div class="sidebar-header p-3 border-bottom border-secondary d-flex justify-content-between align-items-center">
-                <h4 class="m-0 fw-bold d-flex align-items-center">
-                    <i class="fa-solid fa-dumbbell text-primary me-2"></i> FITFAB
-                </h4>
-                <button type="button" id="sidebarClose" class="btn text-white d-md-none p-0">
-                    <i class="fa-solid fa-xmark fs-4"></i>
-                </button>
-            </div>
-            
-            <nav class="sidebar-nav py-4 px-2">
-                <ul class="nav flex-column gap-1">
-                    <li class="nav-item">
-                        <a href="./index.html" class="nav-link rounded text-white active">
-                            <i class="fa-solid fa-chart-line fa-fw me-2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="./socios.html" class="nav-link rounded text-white">
-                            <i class="fa-solid fa-users fa-fw me-2"></i> Socios
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="./clases.html" class="nav-link rounded text-white">
-                            <i class="fa-regular fa-calendar-check fa-fw me-2"></i> Clases y Reservas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="./pagos.html" class="nav-link rounded text-white">
-                            <i class="fa-solid fa-file-invoice-dollar fa-fw me-2"></i> Pagos y Facturación
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="./mantenimiento.html" class="nav-link rounded text-white">
-                            <i class="fa-solid fa-wrench fa-fw me-2"></i> Mantenimiento de Equipos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="./configuracion.html" class="nav-link rounded text-white">
-                            <i class="fa-solid fa-gear fa-fw me-2"></i> Configuración
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-
-        <!-- Main Content Area -->
-        <div class="main-content flex-grow-1 d-flex flex-column">
-            
-            <!-- Header -->
-            <header class="header bg-white shadow-sm px-4 py-3 d-flex justify-content-between align-items-center z-1">
-                <div class="d-flex align-items-center">
-                    <button id="sidebarToggle" class="btn btn-light d-md-none me-3 border-0">
-                        <i class="fa-solid fa-bars fs-5"></i>
-                    </button>
-                    <!-- Visible on small screens, hidden when very narrow if needed -->
-                    <h5 class="m-0 fw-bold text-dark d-none d-sm-block">FITFAB S.A.C.</h5>
-                </div>
-                
-                <div class="user-profile d-flex align-items-center gap-3">
-                    <div class="text-end d-none d-md-block">
-                        <p class="m-0 fw-semibold text-dark lh-1">Administrador</p>
-                        <small class="text-success fw-medium" style="font-size: 0.75rem;">
-                            <i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> En línea
-                        </small>
-                    </div>
-                    <img src="https://ui-avatars.com/api/?name=Admin&background=0D6EFD&color=fff&rounded=true" alt="Admin" class="rounded-circle shadow-sm" width="40" height="40">
-                    <button class="btn btn-outline-danger btn-sm d-none d-sm-flex align-items-center ms-2 fw-medium">
-                        <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar Sesión
-                    </button>
-                    <!-- Mobile logout icon -->
-                    <button class="btn btn-danger btn-sm d-sm-none">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                    </button>
-                </div>
-            </header>
-
-            <!-- Dynamic Content Area -->
-            <main class="p-4 flex-grow-1 overflow-auto">
-                <div class="container-fluid px-0">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h2 class="h3 mb-1 fw-bold text-gray-800">Dashboard General</h2>
-                            <p class="text-muted mb-0">Resumen de las métricas principales del gimnasio.</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Content placeholder -->
-                    <div class="row g-4">
-                        <!-- Stat Card 1 -->
-                        <div class="col-12 col-md-6 col-lg-3">
-                            <div class="card stat-card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-                                <div class="card-body p-4 position-relative">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <div>
-                                            <p class="text-muted fw-medium mb-1">Ingresos del mes</p>
-                                            <h3 id="ingresosMes" class="fw-bold mb-0">
-                                                <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
-                                            </h3>
-                                        </div>
-                                        <div class="icon-box bg-success bg-opacity-10 text-success rounded-3 p-3">
-                                            <i class="fa-solid fa-sack-dollar fs-4"></i>
-                                        </div>
-                                    </div>
-                                    <p class="text-success mb-0 fw-medium small">
-                                        <i class="fa-solid fa-arrow-trend-up me-1"></i> +8.5% vs mes anterior
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Stat Card 2 -->
-                        <div class="col-12 col-md-6 col-lg-3">
-                            <div class="card stat-card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-                                <div class="card-body p-4 position-relative">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <div>
-                                            <p class="text-muted fw-medium mb-1">Socios Activos</p>
-                                            <h3 id="sociosActivos" class="fw-bold mb-0">
-                                                <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
-                                            </h3>
-                                        </div>
-                                        <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-3 p-3">
-                                            <i class="fa-solid fa-users fs-4"></i>
-                                        </div>
-                                    </div>
-                                    <p class="text-success mb-0 fw-medium small">
-                                        <i class="fa-solid fa-arrow-trend-up me-1"></i> +5.2% este mes
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Stat Card 3 -->
-                        <div class="col-12 col-md-6 col-lg-3">
-                            <div class="card stat-card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-                                <div class="card-body p-4 position-relative">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <div>
-                                            <p class="text-muted fw-medium mb-1">Socios Morosos</p>
-                                            <h3 id="sociosMorosos" class="fw-bold mb-0">
-                                                <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
-                                            </h3>
-                                        </div>
-                                        <div class="icon-box bg-danger bg-opacity-10 text-danger rounded-3 p-3">
-                                            <i class="fa-solid fa-user-xmark fs-4"></i>
-                                        </div>
-                                    </div>
-                                    <p class="text-danger mb-0 fw-medium small">
-                                        <i class="fa-solid fa-arrow-trend-down me-1"></i> +2% vs mes anterior
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Stat Card 4 -->
-                        <div class="col-12 col-md-6 col-lg-3">
-                            <div class="card stat-card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-                                <div class="card-body p-4 position-relative">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <div>
-                                            <p class="text-muted fw-medium mb-1">Aforo actual</p>
-                                            <h3 id="aforoActual" class="fw-bold mb-0">
-                                                <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
-                                            </h3>
-                                        </div>
-                                        <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-3 p-3">
-                                            <i class="fa-solid fa-people-group fs-4"></i>
-                                        </div>
-                                    </div>
-                                    <div class="progress mt-2" style="height: 6px;">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 42%;" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Charts Row -->
-                    <div class="row g-4 mt-1">
-                        <!-- Bar Chart -->
-                        <div class="col-12 col-lg-8">
-                            <div class="card border-0 shadow-sm h-100 rounded-4">
-                                <div class="card-body p-4">
-                                    <h5 class="fw-bold mb-4 text-gray-800">Ingresos de los últimos 6 meses</h5>
-                                    <div style="position: relative; height:300px; width:100%">
-                                        <canvas id="ingresosChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Doughnut Chart -->
-                        <div class="col-12 col-lg-4">
-                            <div class="card border-0 shadow-sm h-100 rounded-4">
-                                <div class="card-body p-4">
-                                    <h5 class="fw-bold mb-4 text-gray-800">Estado de los Socios</h5>
-                                    <div style="position: relative; height:300px; width:100%">
-                                        <canvas id="sociosChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
+      <!-- Sidebar -->
+      <aside id="sidebar" class="sidebar bg-dark text-white shadow">
+        <div
+          class="sidebar-header p-3 border-bottom border-secondary d-flex justify-content-between align-items-center"
+        >
+          <h4 class="m-0 fw-bold d-flex align-items-center">
+            <i class="fa-solid fa-dumbbell text-primary me-2"></i> FITFAB
+          </h4>
+          <button
+            type="button"
+            id="sidebarClose"
+            class="btn text-white d-md-none p-0"
+          >
+            <i class="fa-solid fa-xmark fs-4"></i>
+          </button>
         </div>
+
+        <nav class="sidebar-nav py-4 px-2">
+          <ul class="nav flex-column gap-1">
+            <li class="nav-item">
+              <a href="./index.html" class="nav-link rounded text-white active">
+                <i class="fa-solid fa-chart-line fa-fw me-2"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="./socios.html" class="nav-link rounded text-white">
+                <i class="fa-solid fa-users fa-fw me-2"></i> Socios
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="./clases.html" class="nav-link rounded text-white">
+                <i class="fa-regular fa-calendar-check fa-fw me-2"></i> Clases y
+                Reservas
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="./pagos.html" class="nav-link rounded text-white">
+                <i class="fa-solid fa-file-invoice-dollar fa-fw me-2"></i> Pagos
+                y Facturación
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="./mantenimiento.html"
+                class="nav-link rounded text-white"
+              >
+                <i class="fa-solid fa-wrench fa-fw me-2"></i> Mantenimiento de
+                Equipos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="./configuracion.html"
+                class="nav-link rounded text-white"
+              >
+                <i class="fa-solid fa-gear fa-fw me-2"></i> Configuración
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <div class="main-content flex-grow-1 d-flex flex-column">
+        <!-- Header -->
+        <header
+          class="header bg-white shadow-sm px-4 py-3 d-flex justify-content-between align-items-center z-1"
+        >
+          <div class="d-flex align-items-center">
+            <button
+              id="sidebarToggle"
+              class="btn btn-light d-md-none me-3 border-0"
+            >
+              <i class="fa-solid fa-bars fs-5"></i>
+            </button>
+            <!-- Visible on small screens, hidden when very narrow if needed -->
+            <h5 class="m-0 fw-bold text-dark d-none d-sm-block">
+              FITFAB S.A.C.
+            </h5>
+          </div>
+
+          <div class="user-profile d-flex align-items-center gap-3">
+            <div class="text-end d-none d-md-block">
+              <p class="m-0 fw-semibold text-dark lh-1">Administrador</p>
+              <small class="text-success fw-medium" style="font-size: 0.75rem">
+                <i
+                  class="fa-solid fa-circle"
+                  style="font-size: 0.5rem; vertical-align: middle"
+                ></i>
+                En línea
+              </small>
+            </div>
+            <img
+              src="https://ui-avatars.com/api/?name=Admin&background=0D6EFD&color=fff&rounded=true"
+              alt="Admin"
+              class="rounded-circle shadow-sm"
+              width="40"
+              height="40"
+            />
+            <button
+              class="btn btn-outline-danger btn-sm d-none d-sm-flex align-items-center ms-2 fw-medium"
+            >
+              <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar Sesión
+            </button>
+            <!-- Mobile logout icon -->
+            <button class="btn btn-danger btn-sm d-sm-none">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Dynamic Content Area -->
+        <main class="p-4 flex-grow-1 overflow-auto">
+          <div class="container-fluid px-0" id="dashboardContainer">
+            <div
+              class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-4 gap-3"
+            >
+              <div>
+                <h2 class="h3 fw-bold text-dark mb-1">Dashboard</h2>
+                <p class="text-muted mb-0">
+                  Resumen operativo para el gimnasio.
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="d-flex justify-content-between align-items-center mb-4 flex-column flex-md-row gap-3"
+            >
+              <div class="d-flex gap-2 flex-wrap align-items-center">
+                <div
+                  class="btn-group btn-group-sm"
+                  role="group"
+                  aria-label="Filtros rápidos"
+                >
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="filtroRapido"
+                    id="filtroHoy"
+                    autocomplete="off"
+                  />
+                  <label class="btn btn-outline-secondary" for="filtroHoy"
+                    >Hoy</label
+                  >
+
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="filtroRapido"
+                    id="filtro7Dias"
+                    autocomplete="off"
+                  />
+                  <label class="btn btn-outline-secondary" for="filtro7Dias"
+                    >7 Días</label
+                  >
+
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="filtroRapido"
+                    id="filtroEsteMes"
+                    autocomplete="off"
+                    checked
+                  />
+                  <label class="btn btn-outline-secondary" for="filtroEsteMes"
+                    >Este Mes</label
+                  >
+
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="filtroRapido"
+                    id="filtroEsteAno"
+                    autocomplete="off"
+                  />
+                  <label class="btn btn-outline-secondary" for="filtroEsteAno"
+                    >Este Año</label
+                  >
+                </div>
+                <button
+                  id="btnRangoPersonalizado"
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary d-flex align-items-center"
+                >
+                  <i class="fa-solid fa-calendar-days me-2"></i> Filtrar fecha
+                </button>
+                <button
+                  id="btnRestablecerFiltros"
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary d-flex align-items-center"
+                >
+                  <i class="fa-solid fa-rotate-left me-2"></i> Restablecer
+                </button>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-12 col-md-6 col-xl-3">
+                <div class="card shadow-sm rounded-4 h-100">
+                  <div
+                    class="card-body d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <h6 class="text-uppercase text-muted mb-2">
+                        Socios Activos
+                      </h6>
+                      <h2 class="mb-0">128</h2>
+                    </div>
+                    <div class="text-success fs-1">
+                      <i class="fas fa-users"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6 col-xl-3">
+                <div class="card shadow-sm rounded-4 h-100">
+                  <div
+                    class="card-body d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <h6 class="text-uppercase text-muted mb-2">
+                        Ingresos del Mes
+                      </h6>
+                      <h2 class="mb-0">$ 12,450</h2>
+                    </div>
+                    <div class="text-primary fs-1">
+                      <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6 col-xl-3">
+                <div class="card shadow-sm rounded-4 h-100">
+                  <div
+                    class="card-body d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <h6 class="text-uppercase text-muted mb-2">
+                        Socios Vencidos
+                      </h6>
+                      <h2 class="mb-0">14</h2>
+                    </div>
+                    <div class="text-danger fs-1">
+                      <i class="fas fa-triangle-exclamation"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6 col-xl-3">
+                <div class="card shadow-sm rounded-4 h-100">
+                  <div
+                    class="card-body d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <h6 class="text-uppercase text-muted mb-2">
+                        Asistencias Hoy
+                      </h6>
+                      <h2 class="mb-0">72</h2>
+                    </div>
+                    <div class="text-warning fs-1">
+                      <i class="fas fa-door-open"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-12 col-lg-8">
+                <div class="card shadow-sm rounded-4 h-100">
+                  <div class="card-body">
+                    <div
+                      class="d-flex align-items-center justify-content-between mb-3"
+                    >
+                      <h5 id="tituloGraficoIngresos" class="mb-0">
+                        Ingresos de este mes
+                      </h5>
+                    </div>
+                    <div class="chart-wrapper" style="min-height: 320px">
+                      <canvas id="graficoIngresos"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-4">
+                <div class="card shadow-sm rounded-4 h-100">
+                  <div class="card-body">
+                    <h5 class="mb-3">Distribución de Planes</h5>
+                    <div class="chart-wrapper" style="min-height: 320px">
+                      <canvas id="graficoCircular"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-12 col-lg-6">
+                <div class="card shadow-sm rounded-4 h-100">
+                  <div class="card-body">
+                    <h5 class="mb-3">Próximos Vencimientos</h5>
+                    <div class="table-responsive">
+                      <table class="table table-borderless mb-0">
+                        <tbody>
+                          <tr>
+                            <td class="ps-0">María López</td>
+                            <td class="text-end text-danger pe-0">
+                              05/06/2026
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="ps-0">Javier Pérez</td>
+                            <td class="text-end text-danger pe-0">
+                              08/06/2026
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="ps-0">Ana García</td>
+                            <td class="text-end text-danger pe-0">
+                              11/06/2026
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-6">
+                <div class="card shadow-sm rounded-4 h-100">
+                  <div class="card-body">
+                    <h5 class="mb-3">Últimos Pagos Recibidos</h5>
+                    <div class="table-responsive">
+                      <table class="table table-borderless mb-0">
+                        <tbody>
+                          <tr>
+                            <td class="ps-0">Carlos Pérez</td>
+                            <td>Mensual VIP</td>
+                            <td class="text-end">$120</td>
+                          </tr>
+                          <tr>
+                            <td class="ps-0">Ana López</td>
+                            <td>Trimestral</td>
+                            <td class="text-end">$300</td>
+                          </tr>
+                          <tr>
+                            <td class="ps-0">Luis García</td>
+                            <td>Anual Premium</td>
+                            <td class="text-end">$1,000</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+              <button
+                id="btnExportarPDF"
+                class="btn btn-danger btn-sm d-flex align-items-center"
+              >
+                <i class="fa-solid fa-file-pdf me-2"></i> Exportar PDF
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Modal Listado de Socios (Indicadores) -->
+    <div
+      class="modal fade"
+      id="modalListadoSocios"
+      tabindex="-1"
+      aria-labelledby="modalListadoSociosLabel"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
+      >
+        <div class="modal-content border-0 shadow-lg rounded-4">
+          <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+            <h5
+              class="modal-title fw-bold text-dark fs-5"
+              id="modalListadoSociosLabel"
+            >
+              Título Dinámico
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0 text-nowrap">
+                <thead class="table-light">
+                  <tr>
+                    <th
+                      class="text-muted fw-semibold small border-0 rounded-start"
+                    >
+                      Img
+                    </th>
+                    <th class="text-muted fw-semibold small border-0">
+                      Nombre
+                    </th>
+                    <th class="text-muted fw-semibold small border-0">
+                      Apellidos
+                    </th>
+                    <th class="text-muted fw-semibold small border-0">
+                      Producto
+                    </th>
+                    <th class="text-muted fw-semibold small border-0">
+                      Importe
+                    </th>
+                    <th class="text-muted fw-semibold small border-0">
+                      Fecha de renovación
+                    </th>
+                    <th
+                      class="text-muted fw-semibold small border-0 rounded-end text-end"
+                    ></th>
+                  </tr>
+                </thead>
+                <tbody id="tablaSociosIndicador">
+                  <!-- Filas inyectadas por JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Litepicker -->
+    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/plugins/dropdowns.js"></script>
     <!-- Custom JS -->
     <script src="../../public/js/admin/script.js"></script>
     <script src="../../public/js/admin/dashboard.js"></script>
-<script src="../../public/js/shared/utils.js"></script>
-</body>
+    <script src="../../public/js/shared/utils.js"></script>
+  </body>
 </html>
-

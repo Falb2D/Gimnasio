@@ -1,0 +1,139 @@
+/* public/css/admin-dashboard-new.css */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: #f4f7fe;
+}
+
+.bg-light-blue {
+    background-color: #f4f7fe !important;
+}
+
+.wrapper {
+    background-color: #f4f7fe;
+    min-height: 100vh;
+}
+
+/* Sidebar styling */
+.new-sidebar {
+    width: 130px;
+    min-width: 130px;
+    background-color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02) !important;
+}
+
+.new-sidebar .nav-link {
+    color: #a3aed1;
+    transition: all 0.3s ease;
+}
+
+.new-sidebar .nav-link:hover {
+    color: #4318ff;
+    background-color: transparent;
+}
+
+.new-sidebar .nav-link.active .icon-box-nav {
+    background-color: #4318ff;
+    color: white;
+    box-shadow: 0 4px 15px rgba(67, 24, 255, 0.3);
+}
+
+.new-sidebar .nav-link.active span {
+    color: #2b3674;
+    font-weight: 700 !important;
+}
+
+.icon-box-nav {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 14px;
+    color: #a3aed1;
+}
+
+/* Main Content */
+.main-content {
+    background-color: #f4f7fe !important;
+}
+
+/* Inner cards container */
+.dashboard-inner {
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+}
+
+/* Stats Cards */
+.stat-card-new {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
+}
+
+/* Colors for icons */
+.bg-pink-light { background-color: #fff0f5 !important; }
+.text-pink { color: #ff6b9e !important; }
+
+.bg-purple-light { background-color: #f8f5ff !important; }
+.text-purple { color: #a855f7 !important; }
+
+.bg-orange-light { background-color: #fff8f0 !important; }
+.text-orange { color: #fb923c !important; }
+
+.bg-blue-light { background-color: #f0f9ff !important; }
+.text-blue { color: #38bdf8 !important; }
+
+.bg-green-light { background-color: #f0fdf4 !important; }
+.text-green { color: #22c55e !important; }
+
+/* Legend colors */
+.bg-pink { background-color: #ff6b9e !important; }
+.bg-purple { background-color: #a855f7 !important; }
+.bg-orange { background-color: #fb923c !important; }
+.bg-yellow { background-color: #fcd34d !important; }
+
+.legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Custom Select Arrow */
+.custom-select-arrow {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23a3aed1' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-size: 10px 10px;
+    padding-right: 2rem;
+    border: 1px solid #e2e8f0;
+}
+
+/* Trainer List Items */
+.trainer-card-pink {
+    background-color: #fff0f5;
+    border: 1px solid #ffe4ed;
+}
+.trainer-card-purple {
+    background-color: #f8f5ff;
+    border: 1px solid #f0e6ff;
+}
+.trainer-card-orange {
+    background-color: #fff8f0;
+    border: 1px solid #ffefe0;
+}
+
+.star-rating i {
+    color: #facc15;
+    font-size: 0.75rem;
+}
+
+/* Chart Canvas adjustments */
+#mainChart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#revenueChart {
+    width: 100% !important;
+    height: 100% !important;
+}
