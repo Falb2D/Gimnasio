@@ -230,7 +230,7 @@
                       <h6 class="text-uppercase text-muted mb-2">
                         Socios Activos
                       </h6>
-                      <h2 class="mb-0">128</h2>
+                      <h2 class="mb-0" id="statSociosActivos">—</h2>
                     </div>
                     <div class="text-success fs-1">
                       <i class="fas fa-users"></i>
@@ -248,7 +248,7 @@
                       <h6 class="text-uppercase text-muted mb-2">
                         Ingresos del Mes
                       </h6>
-                      <h2 class="mb-0">$ 12,450</h2>
+                      <h2 class="mb-0" id="statIngresosMes">—</h2>
                     </div>
                     <div class="text-primary fs-1">
                       <i class="fas fa-money-bill-wave"></i>
@@ -266,7 +266,7 @@
                       <h6 class="text-uppercase text-muted mb-2">
                         Socios Vencidos
                       </h6>
-                      <h2 class="mb-0">14</h2>
+                      <h2 class="mb-0" id="statSociosVencidos">—</h2>
                     </div>
                     <div class="text-danger fs-1">
                       <i class="fas fa-triangle-exclamation"></i>
@@ -284,7 +284,7 @@
                       <h6 class="text-uppercase text-muted mb-2">
                         Asistencias Hoy
                       </h6>
-                      <h2 class="mb-0">72</h2>
+                      <h2 class="mb-0" id="statAsistenciasHoy">—</h2>
                     </div>
                     <div class="text-warning fs-1">
                       <i class="fas fa-door-open"></i>
@@ -331,25 +331,8 @@
                     <h5 class="mb-3">Próximos Vencimientos</h5>
                     <div class="table-responsive">
                       <table class="table table-borderless mb-0">
-                        <tbody>
-                          <tr>
-                            <td class="ps-0">María López</td>
-                            <td class="text-end text-danger pe-0">
-                              05/06/2026
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="ps-0">Javier Pérez</td>
-                            <td class="text-end text-danger pe-0">
-                              08/06/2026
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="ps-0">Ana García</td>
-                            <td class="text-end text-danger pe-0">
-                              11/06/2026
-                            </td>
-                          </tr>
+                        <tbody id="tablaVencimientos">
+                          <tr><td class="text-center text-muted py-3" colspan="2">Cargando...</td></tr>
                         </tbody>
                       </table>
                     </div>
@@ -363,22 +346,8 @@
                     <h5 class="mb-3">Últimos Pagos Recibidos</h5>
                     <div class="table-responsive">
                       <table class="table table-borderless mb-0">
-                        <tbody>
-                          <tr>
-                            <td class="ps-0">Carlos Pérez</td>
-                            <td>Mensual VIP</td>
-                            <td class="text-end">$120</td>
-                          </tr>
-                          <tr>
-                            <td class="ps-0">Ana López</td>
-                            <td>Trimestral</td>
-                            <td class="text-end">$300</td>
-                          </tr>
-                          <tr>
-                            <td class="ps-0">Luis García</td>
-                            <td>Anual Premium</td>
-                            <td class="text-end">$1,000</td>
-                          </tr>
+                        <tbody id="tablaUltimosPagos">
+                          <tr><td class="text-center text-muted py-3" colspan="3">Cargando...</td></tr>
                         </tbody>
                       </table>
                     </div>
