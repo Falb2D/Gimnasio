@@ -54,8 +54,8 @@ body {
 }
 
 .sidebar-logo {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   object-fit: cover;
   border-radius: 10px;
   flex-shrink: 0;
@@ -91,6 +91,7 @@ body {
   flex-shrink: 0;
   color: rgba(255, 255, 255, 0.6);
   transition: background 0.18s ease, color 0.18s ease;
+  font-size: 1.05rem;
 }
 
 .sidebar-toggle-btn:hover {
@@ -152,32 +153,32 @@ body {
 
 /* Collapsed: nav usa el ancho completo (72px), sin px-2 lateral */
 .sidebar.sidebar-collapsed .sidebar-nav {
-  padding-left: 0;
-  padding-right: 0;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .sidebar.sidebar-collapsed .nav-link {
-  justify-content: center;
-  gap: 0;
-  padding: 0.9rem 0;
-  border-radius: 0;
+  justify-content: center !important;
+  gap: 0 !important;
+  padding: 0.85rem 0 !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
-  overflow: visible;
+  overflow: visible !important;
 }
 
 .sidebar.sidebar-collapsed .nav-link i {
-  font-size: 1.25rem;
-  width: 1.25rem;
+  font-size: 1.45rem !important;
+  width: auto !important;
   text-align: center;
 }
 
 .sidebar.sidebar-collapsed .nav-link.active {
   box-shadow: none !important;
-  border-radius: 0;
+  border-radius: 0 !important;
 }
 
 .sidebar.sidebar-collapsed .nav-text {
-  display: none;
+  display: none !important;
 }
 
 /* Collapsed header: hide logo, show only toggle centered */
@@ -196,6 +197,7 @@ body {
   height: 68px;
   border-radius: 0;
   margin: 0;
+  font-size: 1.3rem;
 }
 
 .sidebar.sidebar-collapsed .sidebar-footer-text {
@@ -354,20 +356,20 @@ main {
     flex: 1 !important;
   }
   .sidebar.sidebar-collapsed .sidebar-nav {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
   }
   .sidebar.sidebar-collapsed .nav-link {
-    justify-content: flex-start;
-    gap: 0.75rem;
-    padding: 0.78rem 0.9rem;
-    border-radius: 0.6rem;
-    box-shadow: none;
-    overflow: hidden;
+    justify-content: flex-start !important;
+    gap: 0.75rem !important;
+    padding: 0.78rem 0.9rem !important;
+    border-radius: 0.6rem !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
   }
   .sidebar.sidebar-collapsed .nav-link i {
-    font-size: 1rem;
-    width: 20px;
+    font-size: 1rem !important;
+    width: 20px !important;
   }
   .sidebar.sidebar-collapsed .nav-link.active {
     border-radius: 0.6rem;
@@ -382,9 +384,10 @@ main {
     display: block !important;
   }
   .sidebar.sidebar-collapsed .sidebar-toggle-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 7px;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 7px !important;
+    font-size: 1.05rem !important;
   }
   .sidebar.sidebar-collapsed .sidebar-footer-text {
     opacity: 1;
