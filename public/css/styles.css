@@ -150,22 +150,30 @@ body {
   font-weight: 600;
 }
 
-/* Collapsed: center icon perfectly */
+/* Collapsed: nav usa el ancho completo (72px), sin px-2 lateral */
+.sidebar.sidebar-collapsed .sidebar-nav {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .sidebar.sidebar-collapsed .nav-link {
   justify-content: center;
   gap: 0;
-  padding: 0.78rem 0;
-  border-radius: 0.6rem;
+  padding: 0.9rem 0;
+  border-radius: 0;
   box-shadow: none !important;
+  overflow: visible;
 }
 
 .sidebar.sidebar-collapsed .nav-link i {
-  font-size: 1.15rem;
-  width: auto;
+  font-size: 1.25rem;
+  width: 1.25rem;
+  text-align: center;
 }
 
 .sidebar.sidebar-collapsed .nav-link.active {
   box-shadow: none !important;
+  border-radius: 0;
 }
 
 .sidebar.sidebar-collapsed .nav-text {
@@ -345,13 +353,24 @@ main {
     width: auto !important;
     flex: 1 !important;
   }
+  .sidebar.sidebar-collapsed .sidebar-nav {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
   .sidebar.sidebar-collapsed .nav-link {
     justify-content: flex-start;
     gap: 0.75rem;
     padding: 0.78rem 0.9rem;
+    border-radius: 0.6rem;
     box-shadow: none;
+    overflow: hidden;
+  }
+  .sidebar.sidebar-collapsed .nav-link i {
+    font-size: 1rem;
+    width: 20px;
   }
   .sidebar.sidebar-collapsed .nav-link.active {
+    border-radius: 0.6rem;
     box-shadow: inset 3px 0 0 rgba(255, 255, 255, 0.4) !important;
   }
   .sidebar.sidebar-collapsed .sidebar-header {
