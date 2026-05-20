@@ -19,45 +19,33 @@
   </head>
   <body>
     <div class="d-flex flex-column flex-lg-row min-vh-100">
-      <aside class="sidebar d-flex flex-column p-4" id="portalSidebar">
-        <a
-          href="./socio.html"
-          class="d-flex align-items-center gap-3 mb-5 text-white text-decoration-none"
-        >
-          <div class="logo-brand">
-            <i class="fa-solid fa-dumbbell"></i>
-          </div>
-          <div>
-            <h5 class="mb-0 fw-bold">FITFAB</h5>
-            <small class="text-white-50">Portal Socio</small>
-          </div>
-        </a>
-        <nav class="nav nav-pills flex-column gap-2 mb-4">
-          <a
-            href="./socio.html"
-            id="navMiQR"
-            class="nav-link d-flex align-items-center gap-2"
-            ><i class="fa-solid fa-qrcode"></i> Mi QR</a
-          >
-          <a
-            href="./socio_clases.html"
-            id="navReservarClases"
-            class="nav-link d-flex align-items-center gap-2"
-            ><i class="fa-regular fa-calendar-check"></i> Reservar Clases</a
-          >
-          <a
-            href="./socio_pagos.html"
-            id="navMisPagos"
-            class="nav-link active d-flex align-items-center gap-2"
-            ><i class="fa-solid fa-file-invoice-dollar"></i> Mis Pagos</a
-          >
+      <aside id="sidebar" class="sidebar bg-dark text-white shadow d-flex flex-column">
+        <div class="sidebar-header">
+          <img src="../../public/img/fitfab.jpg" alt="FITFAB" class="sidebar-logo">
+          <span class="sidebar-brand-text">FITFAB S.A.C.</span>
+          <button type="button" id="sidebarToggleBtn" class="sidebar-toggle-btn ms-auto">
+            <i class="fa-solid fa-xmark icon-collapse"></i>
+            <i class="fa-solid fa-bars icon-expand"></i>
+          </button>
+        </div>
+        <nav class="nav nav-pills flex-column gap-2 p-3 flex-grow-1">
+          <a href="./socio.html" id="navMiQR" class="nav-link d-flex align-items-center gap-2">
+            <i class="fa-solid fa-qrcode fa-fw flex-shrink-0"></i>
+            <span class="nav-text">Mi QR</span>
+          </a>
+          <a href="./socio_clases.html" id="navReservarClases" class="nav-link d-flex align-items-center gap-2">
+            <i class="fa-regular fa-calendar-check fa-fw flex-shrink-0"></i>
+            <span class="nav-text">Reservar Clases</span>
+          </a>
+          <a href="./socio_pagos.html" id="navMisPagos" class="nav-link active d-flex align-items-center gap-2">
+            <i class="fa-solid fa-file-invoice-dollar fa-fw flex-shrink-0"></i>
+            <span class="nav-text">Mis Pagos</span>
+          </a>
         </nav>
-        <div class="mt-auto pt-4">
-          <a
-            href="#"
-            class="btn btn-outline-light btn-logout w-100 rounded-4 py-2 d-flex align-items-center justify-content-center gap-2"
-          >
-            <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+        <div class="p-3 mt-auto border-top border-white border-opacity-10">
+          <a href="#" class="btn btn-outline-light btn-logout w-100 rounded-4 py-2 d-flex align-items-center justify-content-center gap-2">
+            <i class="fa-solid fa-right-from-bracket fa-fw flex-shrink-0"></i>
+            <span class="nav-text">Cerrar Sesión</span>
           </a>
         </div>
       </aside>

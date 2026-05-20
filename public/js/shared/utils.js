@@ -95,20 +95,49 @@ document.addEventListener('DOMContentLoaded', () => {
     verificarSesion();
     _iniciarMonitorInactividad();
 
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const sidebarClose  = document.getElementById('sidebarClose');
-    const sidebar       = document.getElementById('sidebar');
+    // ── Sidebar: colapso en desktop + overlay en móvil ────────────────────
+    const sidebar          = document.getElementById('sidebar');
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn'); // botón dentro del sidebar
+    const sidebarOpenBtn   = document.getElementById('sidebarToggle');    // botón en el header (móvil)
 
-    if (sidebarToggle && sidebar) {
-        sidebarToggle.addEventListener('click', () => sidebar.classList.toggle('show'));
-    }
-    if (sidebarClose && sidebar) {
-        sidebarClose.addEventListener('click', () => sidebar.classList.remove('show'));
+    if (sidebar) {
+        // Restaurar estado colapsado en desktop entre navegaciones
+        if (window.innerWidth >= 768 && localStorage.getItem('sidebarCollapsed') === 'true') {
+            sidebar.classList.add('sidebar-collapsed');
+        }
+
+        if (sidebarToggleBtn) {
+            sidebarToggleBtn.addEventListener('click', () => {
+                if (window.innerWidth < 768) {
+                    // Móvil: cerrar overlay
+                    sidebar.classList.remove('show');
+                } else {
+                    // Desktop: colapsar/expandir
+                    sidebar.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('sidebar-collapsed'));
+                }
+            });
+        }
+
+        // Botón del header (solo para abrir en móvil)
+        if (sidebarOpenBtn) {
+            sidebarOpenBtn.addEventListener('click', () => sidebar.classList.add('show'));
+        }
+
+        // Cerrar sidebar al hacer click fuera en móvil
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 768 && sidebar.classList.contains('show')) {
+                if (!sidebar.contains(e.target) && !sidebarOpenBtn?.contains(e.target)) {
+                    sidebar.classList.remove('show');
+                }
+            }
+        }, { passive: true });
     }
 
-    document.querySelectorAll('button').forEach(btn => {
-        if (btn.textContent.includes('Cerrar Sesión') || btn.querySelector('.fa-right-from-bracket')) {
-            btn.addEventListener('click', cerrarSesion);
+    // ── Cerrar Sesión ─────────────────────────────────────────────────────
+    document.querySelectorAll('button, a').forEach(btn => {
+        if (btn.textContent.trim().includes('Cerrar Sesión') || btn.querySelector('.fa-right-from-bracket')) {
+            btn.addEventListener('click', (e) => { e.preventDefault(); cerrarSesion(); });
         }
     });
 });

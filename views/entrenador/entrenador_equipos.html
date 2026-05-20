@@ -21,36 +21,26 @@
     <div class="wrapper d-flex">
       <!-- Sidebar -->
       <aside id="sidebar" class="sidebar bg-dark text-white shadow">
-        <div
-          class="sidebar-header p-3 border-bottom border-secondary d-flex justify-content-between align-items-center"
-        >
-          <h4 class="m-0 fw-bold d-flex align-items-center">
-            <i class="fa-solid fa-dumbbell text-primary me-2"></i> FITFAB
-          </h4>
-          <button
-            type="button"
-            id="sidebarClose"
-            class="btn text-white d-md-none p-0"
-          >
-            <i class="fa-solid fa-xmark fs-4"></i>
+        <div class="sidebar-header">
+          <img src="../../public/img/fitfab.jpg" alt="FITFAB" class="sidebar-logo">
+          <span class="sidebar-brand-text">FITFAB S.A.C.</span>
+          <button type="button" id="sidebarToggleBtn" class="sidebar-toggle-btn ms-auto">
+            <i class="fa-solid fa-xmark icon-collapse"></i>
+            <i class="fa-solid fa-bars icon-expand"></i>
           </button>
         </div>
-
-        <nav class="sidebar-nav py-4 px-2">
+        <nav class="sidebar-nav py-3 px-2">
           <ul class="nav flex-column gap-1">
             <li class="nav-item">
-              <a href="./entrenador.html" class="nav-link rounded text-white">
-                <i class="fa-regular fa-calendar-check fa-fw me-2"></i> Mis
-                Clases
+              <a href="./entrenador.html" class="nav-link rounded d-flex align-items-center gap-2" title="Mis Clases">
+                <i class="fa-regular fa-calendar-check fa-fw flex-shrink-0"></i>
+                <span class="nav-text">Mis Clases</span>
               </a>
             </li>
             <li class="nav-item">
-              <a
-                href="./entrenador_equipos.html"
-                class="nav-link rounded text-white active"
-              >
-                <i class="fa-solid fa-screwdriver-wrench fa-fw me-2"></i>
-                Reporte de Equipos
+              <a href="./entrenador_equipos.html" class="nav-link rounded active d-flex align-items-center gap-2" title="Reporte de Equipos">
+                <i class="fa-solid fa-screwdriver-wrench fa-fw flex-shrink-0"></i>
+                <span class="nav-text">Reporte de Equipos</span>
               </a>
             </li>
           </ul>

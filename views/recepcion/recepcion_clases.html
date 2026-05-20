@@ -21,53 +21,38 @@
     <div class="wrapper d-flex">
       <!-- Sidebar -->
       <aside id="sidebar" class="sidebar bg-dark text-white shadow">
-        <div
-          class="sidebar-header p-3 border-bottom border-secondary d-flex justify-content-between align-items-center"
-        >
-          <h4 class="m-0 fw-bold d-flex align-items-center">
-            <i class="fa-solid fa-dumbbell text-primary me-2"></i> FITFAB
-          </h4>
-          <button
-            type="button"
-            id="sidebarClose"
-            class="btn text-white d-md-none p-0"
-          >
-            <i class="fa-solid fa-xmark fs-4"></i>
+        <div class="sidebar-header">
+          <img src="../../public/img/fitfab.jpg" alt="FITFAB" class="sidebar-logo">
+          <span class="sidebar-brand-text">FITFAB S.A.C.</span>
+          <button type="button" id="sidebarToggleBtn" class="sidebar-toggle-btn ms-auto">
+            <i class="fa-solid fa-xmark icon-collapse"></i>
+            <i class="fa-solid fa-bars icon-expand"></i>
           </button>
         </div>
-
-        <nav class="sidebar-nav py-4 px-2">
+        <nav class="sidebar-nav py-3 px-2">
           <ul class="nav flex-column gap-1">
             <li class="nav-item">
-              <a href="./recepcion.html" class="nav-link rounded text-white">
-                <i class="fa-solid fa-id-card-clip fa-fw me-2"></i> Control de
-                Acceso
+              <a href="./recepcion.html" class="nav-link rounded d-flex align-items-center gap-2" title="Control de Acceso">
+                <i class="fa-solid fa-id-card-clip fa-fw flex-shrink-0"></i>
+                <span class="nav-text">Control de Acceso</span>
               </a>
             </li>
             <li class="nav-item">
-              <a
-                href="./recepcion_socios.html"
-                class="nav-link rounded text-white"
-              >
-                <i class="fa-solid fa-users fa-fw me-2"></i> Gestión de Socios
+              <a href="./recepcion_socios.html" class="nav-link rounded d-flex align-items-center gap-2" title="Gestión de Socios">
+                <i class="fa-solid fa-users fa-fw flex-shrink-0"></i>
+                <span class="nav-text">Gestión de Socios</span>
               </a>
             </li>
             <li class="nav-item">
-              <a
-                href="./recepcion_pagos.html"
-                class="nav-link rounded text-white"
-              >
-                <i class="fa-solid fa-file-invoice-dollar fa-fw me-2"></i> Pagos
-                y Facturación
+              <a href="./recepcion_pagos.html" class="nav-link rounded d-flex align-items-center gap-2" title="Pagos y Facturación">
+                <i class="fa-solid fa-file-invoice-dollar fa-fw flex-shrink-0"></i>
+                <span class="nav-text">Pagos y Facturación</span>
               </a>
             </li>
             <li class="nav-item">
-              <a
-                href="./recepcion_clases.html"
-                class="nav-link rounded text-white active"
-              >
-                <i class="fa-regular fa-calendar-check fa-fw me-2"></i> Clases y
-                Reservas
+              <a href="./recepcion_clases.html" class="nav-link rounded active d-flex align-items-center gap-2" title="Clases y Reservas">
+                <i class="fa-regular fa-calendar-check fa-fw flex-shrink-0"></i>
+                <span class="nav-text">Clases y Reservas</span>
               </a>
             </li>
           </ul>
