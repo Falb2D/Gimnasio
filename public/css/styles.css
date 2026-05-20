@@ -159,15 +159,17 @@ body {
   box-shadow: none !important;
 }
 
+.sidebar.sidebar-collapsed .nav-link i {
+  font-size: 1.15rem;
+  width: auto;
+}
+
 .sidebar.sidebar-collapsed .nav-link.active {
   box-shadow: none !important;
 }
 
 .sidebar.sidebar-collapsed .nav-text {
-  opacity: 0;
-  width: 0;
-  flex: 0 0 0;
-  overflow: hidden;
+  display: none;
 }
 
 /* Collapsed header: hide logo, show only toggle centered */
@@ -338,6 +340,7 @@ main {
     width: 262px;
   }
   .sidebar.sidebar-collapsed .nav-text {
+    display: inline !important;
     opacity: 1 !important;
     width: auto !important;
     flex: 1 !important;
